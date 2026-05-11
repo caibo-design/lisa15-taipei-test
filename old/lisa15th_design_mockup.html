@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LiSA 15th Taipei Fan Guide</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ff2f9f'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='28' font-family='Arial' font-weight='900' fill='white'%3E15%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --pink: #ff2f9f;
+      --pink-deep: #d5137b;
+      --red: #d8282f;
+      --ink: #080708;
+      --paper: #f4f1ef;
+      --silver: #c7c7c7;
+      --muted: #7f777d;
+      --line: rgba(8, 7, 8, .18);
+      --white-line: rgba(255, 255, 255, .18);
+      --max: 1160px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(8,7,8,.04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(8,7,8,.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 36px 36px;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    a { color: inherit; }
+
+    .site-shell {
+      overflow: hidden;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px max(20px, calc((100vw - var(--max)) / 2));
+      color: var(--paper);
+      background: rgba(8, 7, 8, .74);
+      border-bottom: 1px solid var(--white-line);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-weight: 900;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      color: var(--paper);
+      background: var(--pink);
+      border: 2px solid var(--paper);
+      font-weight: 900;
+      transform: rotate(-6deg);
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    .nav {
+      display: flex;
+      gap: 6px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .nav a {
+      padding: 8px 10px;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    .nav a:hover {
+      color: var(--pink);
+      border-color: var(--pink);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      align-items: end;
+      color: var(--paper);
+      background: var(--ink);
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      background-image: url("素材/669036261_1476090733881363_773819450042997474_n.jpg");
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.02);
+      filter: contrast(1.04) saturate(1.08);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 72% 48%, transparent 0 25%, rgba(8,7,8,.2) 45%, rgba(8,7,8,.76) 78%),
+        linear-gradient(90deg, rgba(8,7,8,.88) 0%, rgba(8,7,8,.72) 38%, rgba(8,7,8,.16) 70%, rgba(8,7,8,.6) 100%);
+    }
+
+    .hero-noise {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: .24;
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.16) 0 1px, transparent 1px 4px),
+        repeating-linear-gradient(90deg, rgba(255,47,159,.16) 0 1px, transparent 1px 9px);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      padding: 112px 0 52px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(300px, .66fr);
+      gap: 36px;
+      align-items: end;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: var(--pink);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 54px;
+      height: 3px;
+      background: var(--pink);
+      box-shadow: 0 8px 0 var(--red);
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(52px, 9.6vw, 124px);
+      line-height: .86;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+
+    .brush {
+      display: inline-block;
+      color: var(--pink);
+      text-shadow: 4px 4px 0 rgba(8, 7, 8, .88);
+      transform: rotate(-2deg);
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      margin: 20px 0 0;
+      color: rgba(244, 241, 239, .86);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 18px;
+      color: var(--paper);
+      background: var(--ink);
+      border: 2px solid currentColor;
+      border-radius: 6px;
+      font-weight: 900;
+      text-decoration: none;
+      box-shadow: 5px 5px 0 var(--pink);
+      transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    .button:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--pink);
+    }
+
+    .button.primary {
+      color: var(--ink);
+      background: var(--pink);
+      box-shadow: 5px 5px 0 var(--paper);
+    }
+
+    .hero-panel {
+      background: rgba(244, 241, 239, .95);
+      color: var(--ink);
+      border: 2px solid var(--paper);
+      border-radius: 8px;
+      box-shadow: 10px 10px 0 rgba(255, 47, 159, .78);
+      overflow: hidden;
+    }
+
+    .hero-panel img {
+      width: 100%;
+      aspect-ratio: 1.45 / 1;
+      object-fit: cover;
+      object-position: 50% 22%;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .event-card {
+      display: grid;
+      gap: 10px;
+      padding: 14px 16px 16px;
+    }
+
+    .event-row {
+      display: grid;
+      grid-template-columns: 66px 1fr;
+      gap: 12px;
+      align-items: baseline;
+      border-bottom: 1px dashed var(--line);
+      padding-bottom: 10px;
+    }
+
+    .event-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .event-row span {
+      color: var(--pink-deep);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .event-row strong {
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 28px;
+      max-width: 650px;
+    }
+
+    .timebox {
+      padding: 12px 10px;
+      color: var(--paper);
+      background: rgba(8, 7, 8, .72);
+      border: 1px solid var(--white-line);
+      border-radius: 6px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .timebox strong {
+      display: block;
+      color: var(--pink);
+      font-size: clamp(30px, 5vw, 56px);
+      line-height: 1;
+    }
+
+    .timebox span {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .section {
+      padding: 74px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section.dark {
+      color: var(--paper);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        var(--ink);
+      background-size: 28px 28px;
+      border-bottom-color: var(--white-line);
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      color: var(--pink-deep);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .dark .eyebrow { color: var(--pink); }
+
+    h2 {
+      margin: 4px 0 0;
+      font-size: clamp(34px, 6vw, 76px);
+      line-height: .95;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .section-note {
+      max-width: 380px;
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .dark .section-note {
+      color: rgba(244, 241, 239, .7);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      box-shadow: 8px 8px 0 var(--pink);
+    }
+
+    .info-item {
+      min-height: 160px;
+      padding: 20px;
+      border-right: 1px dashed var(--line);
+    }
+
+    .info-item:last-child { border-right: 0; }
+
+    .info-item span {
+      display: block;
+      color: var(--pink-deep);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .info-item strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 26px;
+      line-height: 1.08;
+    }
+
+    .info-item p {
+      margin: 12px 0 0;
+      color: #4b4549;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 34px;
+      align-items: center;
+    }
+
+    .poster-stack {
+      position: relative;
+      min-height: 540px;
+    }
+
+    .poster {
+      position: absolute;
+      overflow: hidden;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      box-shadow: 8px 8px 0 var(--pink);
+    }
+
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .poster.one {
+      inset: 0 12% 8% 0;
+      transform: rotate(-2deg);
+    }
+
+    .poster.two {
+      right: 0;
+      bottom: 0;
+      width: 42%;
+      aspect-ratio: 1 / 1.28;
+      transform: rotate(4deg);
+      box-shadow: 7px 7px 0 var(--ink);
+    }
+
+    .tape {
+      position: absolute;
+      z-index: 3;
+      width: 140px;
+      height: 34px;
+      background: rgba(244, 241, 239, .72);
+      border: 1px solid rgba(8, 7, 8, .2);
+      transform: rotate(-10deg);
+    }
+
+    .tape.a { top: 26px; left: 20px; }
+    .tape.b { right: 52px; bottom: 116px; transform: rotate(11deg); }
+
+    .song-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .song {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      min-height: 58px;
+      padding: 10px 14px;
+      color: var(--paper);
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--white-line);
+      border-radius: 6px;
+      text-decoration: none;
+    }
+
+    .song:hover {
+      border-color: var(--pink);
+      background: rgba(255,47,159,.12);
+    }
+
+    .song b {
+      color: var(--pink);
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .song strong {
+      display: block;
+      line-height: 1.25;
+    }
+
+    .song small {
+      display: block;
+      color: rgba(244, 241, 239, .58);
+      font-weight: 700;
+    }
+
+    .song em {
+      justify-self: end;
+      padding: 5px 9px;
+      color: var(--pink);
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .song.hot {
+      border-color: rgba(255,47,159,.74);
+      background: rgba(255,47,159,.16);
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .check {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-height: 108px;
+      padding: 18px;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .check input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .box {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 26px;
+      height: 26px;
+      color: var(--paper);
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .check input:checked + .box {
+      background: var(--pink);
+    }
+
+    .check input:checked + .box::before {
+      content: "✓";
+    }
+
+    .check strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .check span:last-child {
+      display: block;
+      margin-top: 5px;
+      color: #5d555b;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .download-band {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .ticket-preview {
+      display: grid;
+      min-height: 360px;
+      padding: 22px;
+      color: var(--paper);
+      background:
+        linear-gradient(rgba(8,7,8,.32), rgba(8,7,8,.68)),
+        url("素材/650996790_1455269059296864_7153961107339767219_n.jpg");
+      background-size: cover;
+      background-position: center;
+      border: 2px solid var(--paper);
+      border-radius: 8px;
+      box-shadow: 8px 8px 0 var(--pink);
+    }
+
+    .ticket-preview strong {
+      align-self: end;
+      font-size: clamp(40px, 7vw, 86px);
+      line-height: .88;
+      text-transform: uppercase;
+    }
+
+    .download-copy {
+      display: grid;
+      align-content: center;
+      padding: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 2px solid var(--paper);
+      border-radius: 8px;
+    }
+
+    .download-copy h3 {
+      margin: 0;
+      font-size: clamp(30px, 5vw, 64px);
+      line-height: .95;
+      text-transform: uppercase;
+    }
+
+    .steps {
+      display: grid;
+      gap: 10px;
+      margin: 20px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      font-weight: 800;
+    }
+
+    .goods-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .goods-image {
+      overflow: hidden;
+      background: var(--ink);
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      box-shadow: 8px 8px 0 var(--pink);
+    }
+
+    .goods-image img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .goods-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .goods-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      background: #fff;
+      border: 2px solid var(--ink);
+      border-radius: 6px;
+      font-weight: 900;
+      box-shadow: 4px 4px 0 rgba(8, 7, 8, .12);
+    }
+
+    .goods-item span {
+      color: var(--pink-deep);
+      white-space: nowrap;
+    }
+
+    .highlight {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .sparkle {
+      overflow: hidden;
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      box-shadow: 8px 8px 0 var(--pink);
+      transform: rotate(-1deg);
+    }
+
+    .million {
+      padding: 34px;
+      background: #fff;
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+    }
+
+    .million .number {
+      color: var(--pink);
+      font-size: clamp(56px, 10vw, 128px);
+      font-weight: 900;
+      line-height: .85;
+      letter-spacing: 0;
+    }
+
+    .million p {
+      margin: 18px 0 0;
+      color: #4c454a;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .footer {
+      padding: 36px 0 52px;
+      color: rgba(244, 241, 239, .72);
+      background: var(--ink);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .footer a {
+      color: var(--pink);
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    @media (max-width: 900px) {
+      .nav { display: none; }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero::before {
+        background-image: url("素材/650996790_1455269059296864_7153961107339767219_n.jpg");
+        background-position: 55% 8%;
+      }
+
+      .hero::after {
+        background:
+          linear-gradient(180deg, rgba(8,7,8,.12) 0%, rgba(8,7,8,.28) 34%, rgba(8,7,8,.92) 72%, rgba(8,7,8,.98) 100%);
+      }
+
+      .hero-inner {
+        padding-top: 58svh;
+      }
+
+      .hero-grid,
+      .split,
+      .download-band,
+      .goods-layout,
+      .highlight {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-panel {
+        display: none;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .section-note {
+        margin-top: 12px;
+      }
+
+      .info-grid,
+      .check-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .poster-stack {
+        min-height: 420px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar {
+        padding-inline: 14px;
+      }
+
+      .brand {
+        font-size: 13px;
+      }
+
+      .hero-inner,
+      .wrap {
+        width: min(100% - 28px, var(--max));
+      }
+
+      .hero-copy {
+        font-size: 15px;
+      }
+
+      .hero-actions {
+        display: grid;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .countdown,
+      .info-grid,
+      .check-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .section {
+        padding: 54px 0;
+      }
+
+      .info-item {
+        min-height: 136px;
+        padding: 16px;
+      }
+
+      .info-item:nth-child(2) {
+        border-right: 0;
+      }
+
+      .info-item strong {
+        font-size: 21px;
+      }
+
+      .poster-stack {
+        min-height: 360px;
+      }
+
+      .song {
+        grid-template-columns: 36px 1fr;
+      }
+
+      .song em {
+        grid-column: 2;
+        justify-self: start;
+      }
+
+      .check {
+        min-height: 132px;
+        padding: 14px;
+      }
+
+      .goods-item {
+        display: block;
+      }
+
+      .goods-item span {
+        display: block;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar" aria-label="網站導覽">
+      <a class="brand" href="#top" aria-label="回到首頁">
+        <span class="brand-mark">15</span>
+        <span>LiSA Taipei Fan Guide</span>
+      </a>
+      <nav class="nav">
+        <a href="#info">Info</a>
+        <a href="#setlist">Setlist</a>
+        <a href="#checklist">Checklist</a>
+        <a href="#ticket">Ticket</a>
+        <a href="#goods">Goods</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="LiSA 15th 台北場主視覺">
+        <div class="hero-noise" aria-hidden="true"></div>
+        <div class="hero-inner">
+          <div class="hero-grid">
+            <div>
+              <div class="kicker">Asia Tour 2026</div>
+              <h1>LiVE is Smile Always <span class="brush">15</span></h1>
+              <p class="hero-copy">台北小巨蛋粉絲入口：歌單預習、入場提醒、票袋下載與官方周邊資訊，一次整理好。</p>
+              <div class="hero-actions">
+                <a class="button primary" href="#setlist">歌單預習</a>
+                <a class="button" href="#ticket">下載票袋</a>
+              </div>
+              <div class="countdown" aria-label="距離開演倒數">
+                <div class="timebox"><strong id="days">--</strong><span>Days</span></div>
+                <div class="timebox"><strong id="hours">--</strong><span>Hours</span></div>
+                <div class="timebox"><strong id="minutes">--</strong><span>Minutes</span></div>
+                <div class="timebox"><strong id="seconds">--</strong><span>Seconds</span></div>
+              </div>
+            </div>
+
+            <aside class="hero-panel" aria-label="演出資訊">
+              <img src="素材/662910887_1473856544104782_1797694666298698514_n.jpg" alt="LiSA 15th Asia Tour Kuala Lumpur poster visual">
+              <div class="event-card">
+                <div class="event-row"><span>Date</span><strong>2026.06.19 Fri</strong></div>
+                <div class="event-row"><span>Venue</span><strong>Taipei Arena 台北小巨蛋</strong></div>
+                <div class="event-row"><span>Start</span><strong>18:00</strong></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="info">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">Quick Info</div>
+              <h2>先抓重點</h2>
+            </div>
+            <p class="section-note">把演出當天最容易忘的資訊放在第一層，手機打開就能掃過去。</p>
+          </div>
+
+          <div class="info-grid">
+            <div class="info-item">
+              <span>Date</span>
+              <strong>6 / 19</strong>
+              <p>週五晚上，建議至少 17:00 前抵達。</p>
+            </div>
+            <div class="info-item">
+              <span>Venue</span>
+              <strong>台北小巨蛋</strong>
+              <p>捷運南京三民站步行約 10 分鐘。</p>
+            </div>
+            <div class="info-item">
+              <span>Color</span>
+              <strong>Pink</strong>
+              <p>官方應援色以粉紅色為主。</p>
+            </div>
+            <div class="info-item">
+              <span>Notice</span>
+              <strong>禁止錄影</strong>
+              <p>手機靜音，自拍棒與腳架不要帶。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="setlist">
+        <div class="wrap split">
+          <div class="poster-stack" aria-label="主視覺拼貼">
+            <span class="tape a" aria-hidden="true"></span>
+            <span class="tape b" aria-hidden="true"></span>
+            <div class="poster one">
+              <img src="素材/650996790_1455269059296864_7153961107339767219_n.jpg" alt="LiSA LACE UP album visual">
+            </div>
+            <div class="poster two">
+              <img src="素材/662910887_1473856544104782_1797694666298698514_n.jpg" alt="LiSA Asia Tour poster">
+            </div>
+          </div>
+
+          <div>
+            <div class="section-head">
+              <div>
+                <div class="eyebrow">Setlist Preview</div>
+                <h2>先把歌熱起來</h2>
+              </div>
+            </div>
+            <p class="section-note">依日本場實際歌單整理，台北場仍可能調整；《炎 Homura》已列為台北追加重點。</p>
+            <div class="song-list" style="margin-top:22px">
+              <a class="song" href="https://www.youtube.com/watch?v=SfaF1ZQ32A0" target="_blank" rel="noreferrer">
+                <b>01</b><span><strong>best day, best way</strong><small>2013 開場曲</small></span><em>YT</em>
+              </a>
+              <a class="song" href="https://www.youtube.com/watch?v=OcNSFV5Io0Q" target="_blank" rel="noreferrer">
+                <b>02</b><span><strong>oath sign</strong><small>Fate/Zero OP</small></span><em>YT</em>
+              </a>
+              <a class="song" href="https://www.youtube.com/watch?v=1aPOj0ERTEc" target="_blank" rel="noreferrer">
+                <b>03</b><span><strong>crossing field</strong><small>Sword Art Online OP</small></span><em>YT</em>
+              </a>
+              <a class="song" href="https://www.youtube.com/watch?v=CwkzK-F0Y00" target="_blank" rel="noreferrer">
+                <b>04</b><span><strong>紅蓮華 Gurenge</strong><small>鬼滅之刃 OP</small></span><em>YT</em>
+              </a>
+              <a class="song" href="https://www.youtube.com/watch?v=uxLmmd4FOOM" target="_blank" rel="noreferrer">
+                <b>05</b><span><strong>ADAMAS</strong><small>SAO Alicization OP</small></span><em>YT</em>
+              </a>
+              <a class="song" href="https://www.youtube.com/watch?v=Yd3iKGBgzZM" target="_blank" rel="noreferrer">
+                <b>06</b><span><strong>Catch the Moment</strong><small>劇場版 SAO Ordinal Scale</small></span><em>YT</em>
+              </a>
+              <a class="song hot" href="https://www.youtube.com/watch?v=4DxL6IKmXx4" target="_blank" rel="noreferrer">
+                <b>＋</b><span><strong>炎 Homura</strong><small>台北追加重點曲</small></span><em>MV</em>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="checklist">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">Fan Checklist</div>
+              <h2>進場前 6 件事</h2>
+            </div>
+            <p class="section-note">做成可勾選格式，讓粉絲當天直接用手機確認。</p>
+          </div>
+
+          <div class="check-grid">
+            <label class="check">
+              <input type="checkbox">
+              <span class="box" aria-hidden="true"></span>
+              <span><strong>票券帶好</strong><span>先截圖或加入錢包，入口不要慌。</span></span>
+            </label>
+            <label class="check">
+              <input type="checkbox">
+              <span class="box" aria-hidden="true"></span>
+              <span><strong>手機靜音</strong><span>開演前先調整，現場更沉浸。</span></span>
+            </label>
+            <label class="check">
+              <input type="checkbox">
+              <span class="box" aria-hidden="true"></span>
+              <span><strong>粉紅應援</strong><span>手燈、配件或穿搭都可以。</span></span>
+            </label>
+            <label class="check">
+              <input type="checkbox">
+              <span class="box" aria-hidden="true"></span>
+              <span><strong>禁錄禁拍</strong><span>錄音錄影不要做，專心喊到最後。</span></span>
+            </label>
+            <label class="check">
+              <input type="checkbox">
+              <span class="box" aria-hidden="true"></span>
+              <span><strong>交通預留</strong><span>捷運與散場人潮都要留時間。</span></span>
+            </label>
+            <label class="check">
+              <input type="checkbox">
+              <span class="box" aria-hidden="true"></span>
+              <span><strong>周邊清單</strong><span>先選好想買的品項與尺寸。</span></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="ticket">
+        <div class="wrap download-band">
+          <div class="ticket-preview" aria-label="票袋視覺預覽">
+            <strong>Ticket<br>Holder</strong>
+          </div>
+          <div class="download-copy">
+            <div class="eyebrow">Printable</div>
+            <h3>把票收進 15 週年的粉紅噪音裡</h3>
+            <ul class="steps">
+              <li>A4 黑白列印</li>
+              <li>沿虛線對折</li>
+              <li>票插入即可帶去現場</li>
+            </ul>
+            <div class="hero-actions">
+              <a class="button primary" href="assets/ticket.pdf">下載 PDF</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="goods">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">Official Goods</div>
+              <h2>周邊先看好</h2>
+            </div>
+            <p class="section-note">原圖保留完整總覽，再補一份快速願望清單，現場排隊時更好決定。</p>
+          </div>
+
+          <div class="goods-layout">
+            <div class="goods-image">
+              <img src="素材/678706569_1487002586123511_918994064303536647_n.jpg" alt="LiSA 15th Asia Tour official goods list">
+            </div>
+            <div class="goods-list">
+              <div class="goods-item">T-shirt <span>M / L / XL</span></div>
+              <div class="goods-item">Light stick <span>應援必備</span></div>
+              <div class="goods-item">Bucket Hat <span>可雙面戴</span></div>
+              <div class="goods-item">Scarf towel <span>演唱會常用</span></div>
+              <div class="goods-item">Keyholder <span>角色款 / LiSA 款</span></div>
+              <div class="goods-item">Blind badges <span>11 款</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap highlight">
+          <div class="sparkle">
+            <img src="素材/667863751_1476061287217641_1401771218230708810_n.jpg" alt="DECOTORA15 one million views visual">
+          </div>
+          <div class="million">
+            <div class="eyebrow">Highlight</div>
+            <div class="number">1,000,000</div>
+            <p>DECOTORA15 破百萬觀看可以做成中段亮點，讓頁面在資訊之外也保留慶祝感。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <p>Made by @caibo_design · 非官方粉絲網站設計提案</p>
+        <p>資料與實際演出資訊仍以主辦、官方公告與現場為準。</p>
+        <p><a href="https://www.instagram.com/caibo_design/" target="_blank" rel="noreferrer">Instagram</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const targetTime = new Date("2026-06-19T18:00:00+08:00").getTime();
+    const parts = {
+      days: document.getElementById("days"),
+      hours: document.getElementById("hours"),
+      minutes: document.getElementById("minutes"),
+      seconds: document.getElementById("seconds")
+    };
+
+    function pad(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function tick() {
+      const diff = Math.max(0, targetTime - Date.now());
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+
+      parts.days.textContent = days;
+      parts.hours.textContent = pad(hours);
+      parts.minutes.textContent = pad(minutes);
+      parts.seconds.textContent = pad(seconds);
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>

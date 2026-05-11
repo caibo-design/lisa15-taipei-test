@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiSA 15th Live — 台北小巨蛋 6/19 預習指南</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8102E;
+    --red-dark: #8B0A1E;
+    --red-glow: rgba(200,16,46,0.3);
+    --gold: #D4A843;
+    --gold-light: #F5D080;
+    --dark: #0A0A0A;
+    --dark2: #111111;
+    --dark3: #1A1A1A;
+    --dark4: #222222;
+    --text: #F0EDE8;
+    --muted: #888880;
+    --border: rgba(255,255,255,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* --- HERO --- */
+  .hero {
+    position: relative;
+    padding: 80px 24px 60px;
+    text-align: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 0%, rgba(200,16,46,0.18) 0%, transparent 70%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '15';
+    position: absolute;
+    top: -20px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 280px;
+    color: rgba(200,16,46,0.06);
+    letter-spacing: -10px;
+    user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 10vw, 88px);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .hero-title span { color: var(--red); }
+  .hero-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .hero-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+  .hero-tag {
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 99px;
+    border: 1px solid;
+  }
+  .hero-tag.red { border-color: var(--red); color: var(--red); background: rgba(200,16,46,0.08); }
+  .hero-tag.gold { border-color: var(--gold); color: var(--gold); background: rgba(212,168,67,0.08); }
+  .hero-tag.dim { border-color: var(--border); color: var(--muted); }
+
+  /* --- CONTAINER --- */
+  .container { max-width: 780px; margin: 0 auto; padding: 0 20px; }
+
+  /* --- SECTION --- */
+  .section { padding: 48px 0 0; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .section-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* --- TOUR STOPS --- */
+  .tour-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .stop {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--dark2);
+    position: relative;
+    overflow: hidden;
+  }
+  .stop.done { border-color: rgba(255,255,255,0.15); }
+  .stop.done::after {
+    content: '✓';
+    position: absolute; top: 10px; right: 12px;
+    font-size: 12px; color: #4CAF50;
+  }
+  .stop.you {
+    border-color: var(--red);
+    background: rgba(200,16,46,0.08);
+    box-shadow: 0 0 20px var(--red-glow);
+  }
+  .stop.upcoming { opacity: 0.5; }
+  .stop-date { font-size: 11px; color: var(--gold); margin-bottom: 3px; letter-spacing: 0.05em; }
+  .stop-name { font-size: 13px; font-weight: 500; }
+  .stop-venue { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .stop-pill {
+    display: inline-block;
+    font-size: 9px;
+    padding: 1px 7px;
+    border-radius: 99px;
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+  .stop.done .stop-pill { background: rgba(76,175,80,0.15); color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); }
+  .stop.you .stop-pill { background: rgba(200,16,46,0.2); color: #FF6B6B; border: 1px solid var(--red); }
+  .stop.upcoming .stop-pill { background: var(--dark3); color: var(--muted); border: 1px solid var(--border); }
+
+  /* --- SETLIST --- */
+  .setlist { display: flex; flex-direction: column; gap: 4px; }
+  .song {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--dark2);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+  }
+  .song:hover {
+    border-color: rgba(200,16,46,0.5);
+    background: rgba(200,16,46,0.05);
+    box-shadow: 0 0 12px rgba(200,16,46,0.1);
+  }
+  .song.fire {
+    border-color: rgba(200,16,46,0.4);
+    background: rgba(200,16,46,0.07);
+  }
+  .song.fire:hover { box-shadow: 0 0 20px rgba(200,16,46,0.25); }
+  .song.encore { background: rgba(212,168,67,0.04); border-color: rgba(212,168,67,0.2); }
+  .song.encore:hover { border-color: rgba(212,168,67,0.5); }
+  .song-num { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--muted); min-width: 28px; text-align: right; flex-shrink: 0; line-height: 1; }
+  .song.fire .song-num { color: var(--red); }
+  .song.encore .song-num { color: var(--gold); }
+  .song-info { flex: 1; min-width: 0; }
+  .song-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .song.fire .song-name { color: #FF9090; }
+  .song.encore .song-name { color: var(--gold-light); }
+  .song-anime { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .yt-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: rgba(255,0,0,0.12);
+    border: 1px solid rgba(255,0,0,0.25);
+    color: #FF6B6B;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .yt-btn:hover { background: rgba(255,0,0,0.22); border-color: rgba(255,0,0,0.5); }
+  .yt-icon { width: 14px; height: 14px; fill: #FF4444; flex-shrink: 0; }
+  .no-yt { font-size: 10px; color: #333; flex-shrink: 0; }
+
+  /* --- DIVIDER LABELS --- */
+  .sub-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 18px 0 8px;
+  }
+  .encore-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 0 10px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .encore-label::before,
+  .encore-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(212,168,67,0.2);
+  }
+
+  /* --- INFO BOX --- */
+  .info-box {
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(200,16,46,0.3);
+    background: rgba(200,16,46,0.06);
+    font-size: 12px;
+    color: #FF9090;
+    margin-bottom: 16px;
+  }
+  .info-box strong { color: var(--red); }
+
+  /* --- STATS --- */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .stat {
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--dark2);
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    line-height: 1;
+    color: var(--red);
+  }
+  .stat-label { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: 0.05em; }
+
+  /* --- FOOTER --- */
+  footer {
+    margin-top: 60px;
+    padding: 28px 0 40px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 2;
+  }
+  footer a { color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 500px) {
+    .song-anime { display: none; }
+    .stats-grid { grid-template-columns: repeat(3,1fr); }
+    .stat-num { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">LiVE is Smile Always ～15～ · ASIA TOUR</div>
+  <h1 class="hero-title">LiSA <span>15th</span><br>台北小巨蛋</h1>
+  <p class="hero-sub">LiSAライブセトリ完全預習指南 · 資料截至 2026/05/06</p>
+  <div class="hero-tags">
+    <span class="hero-tag red">🔥 6/18・19 台北アリーナ</span>
+    <span class="hero-tag gold">✦ 亞洲巡迴第一站</span>
+    <span class="hero-tag dim">参考：武道館 4/17・18 ／ 神戸 4/28・29</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: TOUR PROGRESS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title">巡迴場次進度</div>
+    </div>
+
+    <div class="tour-grid">
+      <div class="stop done">
+        <div class="stop-date">2026 / 04 / 17・18</div>
+        <div class="stop-name">東京</div>
+        <div class="stop-venue">日本武道館</div>
+        <span class="stop-pill">已完成</span>
+      </div>
+      <div class="stop done">
+        <div class="stop-date">2026 / 04 / 28・29</div>
+        <div class="stop-name">神戸</div>
+        <div class="stop-venue">神戸ワールド記念ホール</div>
+        <span class="stop-pill">已完成</span>
+      </div>
+      <div class="stop upcoming">
+        <div class="stop-date">2026 / 05 / 19・20</div>
+        <div class="stop-name">名古屋</div>
+        <div class="stop-venue">クロコくんホール（日本ガイシ）</div>
+        <span class="stop-pill">即將</span>
+      </div>
+      <div class="stop you">
+        <div class="stop-date">2026 / 06 / 18・19</div>
+        <div class="stop-name">台北 ★ 你的場次</div>
+        <div class="stop-venue">台北アリーナ 小巨蛋</div>
+        <span class="stop-pill">ASIA 第一站</span>
+      </div>
+      <div class="stop upcoming">
+        <div class="stop-date">2026 / 07 / 17</div>
+        <div class="stop-name">香港</div>
+        <div class="stop-venue">AsiaWorld-Arena</div>
+        <span class="stop-pill">即將</span>
+      </div>
+      <div class="stop upcoming">
+        <div class="stop-date">2026 / 07 / 31・08 / 01</div>
+        <div class="stop-name">首爾</div>
+        <div class="stop-venue">Olympic Hall</div>
+        <span class="stop-pill">即將</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: STATS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title">歌單數據</div>
+      <div class="section-note">根據武道館・神戸場次</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-num">22</div>
+        <div class="stat-label">總曲目數</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">19</div>
+        <div class="stat-label">主歌單</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">安可曲</div>
+      </div>
+    </div>
+    <div class="info-box">
+      🔥 <strong>炎（Homura）</strong>：LiSA 本人已在個人 IG 確認台北必唱，為本次亞洲巡迴追加曲。總預計曲目 <strong>23 首</strong>。
+    </div>
+  </div>
+
+  <!-- SECTION 3: SETLIST -->
+  <div class="section" style="padding-bottom: 0;">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title">完整預測歌單</div>
+      <div class="section-note">點歌名可開啟 YouTube ▶</div>
+    </div>
+
+    <div class="sub-label">主歌單 · Main Set</div>
+    <div class="setlist">
+
+      <a class="song" href="https://www.youtube.com/watch?v=SfaF1ZQ32A0" target="_blank">
+        <span class="song-num">01</span>
+        <div class="song-info"><div class="song-name">best day, best way</div><div class="song-anime">2013 · 開場曲</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=YVcZ8jLCXRk" target="_blank">
+        <span class="song-num">02</span>
+        <div class="song-info"><div class="song-name">Merry Hurry Berry</div><div class="song-anime">LACE UP 2026 新曲</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YT</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=OcNSFV5Io0Q" target="_blank">
+        <span class="song-num">03</span>
+        <div class="song-info"><div class="song-name">oath sign</div><div class="song-anime">Fate/Zero OP · 出道作 2011</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=1aPOj0ERTEc" target="_blank">
+        <span class="song-num">04</span>
+        <div class="song-info"><div class="song-name">crossing field</div><div class="song-anime">Sword Art Online OP · 2012</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=tJ0Ai2UJFTU" target="_blank">
+        <span class="song-num">05</span>
+        <div class="song-info"><div class="song-name">träumerei</div><div class="song-anime">Charlotte ED · 2013</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=CwkzK-F0Y00" target="_blank">
+        <span class="song-num">06</span>
+        <div class="song-info"><div class="song-name">紅蓮華 (Gurenge)</div><div class="song-anime">鬼滅之刃 OP · 2019</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=uxLmmd4FOOM" target="_blank">
+        <span class="song-num">07</span>
+        <div class="song-info"><div class="song-name">ADAMAS</div><div class="song-anime">SAO Alicization OP · 2018</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <div class="song">
+        <span class="song-num">08</span>
+        <div class="song-info"><div class="song-name">赤い罠（ホーンセッションver）</div><div class="song-anime">2018 · 現場限定特別編曲</div></div>
+        <span class="no-yt">現場限定</span>
+      </div>
+
+      <a class="song" href="https://www.youtube.com/watch?v=56aCZIEm9fc" target="_blank">
+        <span class="song-num">09</span>
+        <div class="song-info"><div class="song-name">HADASHi NO STEP</div><div class="song-anime">個人專輯 LANDER · 2021</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=6G2TS7-Wh_I" target="_blank">
+        <span class="song-num">10</span>
+        <div class="song-info"><div class="song-name">BRiGHT FLiGHT</div><div class="song-anime">魔法科高中の劣等生 ED · 2014</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=aYDxNMGCwCk" target="_blank">
+        <span class="song-num">11</span>
+        <div class="song-info"><div class="song-name">Letters to ME</div><div class="song-anime">LACE UP 2026 新曲</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YT</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=KNJ8D5NVMYU" target="_blank">
+        <span class="song-num">12</span>
+        <div class="song-info"><div class="song-name">Patch Walk</div><div class="song-anime">PATCH WALK 巡迴曲 · 2025</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YT</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=hMzxGMwMFOM" target="_blank">
+        <span class="song-num">13</span>
+        <div class="song-info"><div class="song-name">DECOTORA15</div><div class="song-anime">LACE UP 2026 新曲</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YT</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=jM3azhsAFIo" target="_blank">
+        <span class="song-num">14</span>
+        <div class="song-info"><div class="song-name">rapid life シンドローム</div><div class="song-anime">LACE UP 2026 新曲</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YT</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=NqNNjHHENJY" target="_blank">
+        <span class="song-num">15</span>
+        <div class="song-info"><div class="song-name">QUEEN</div><div class="song-anime">個人專輯 · 2024</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=fR7e0N1UkRI" target="_blank">
+        <span class="song-num">16</span>
+        <div class="song-info"><div class="song-name">Shouted Serenade</div><div class="song-anime">魔法科高中の劣等生 第3期 OP · 2024</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=Yd3iKGBgzZM" target="_blank">
+        <span class="song-num">17</span>
+        <div class="song-info"><div class="song-name">Catch the Moment</div><div class="song-anime">劇場版 SAO Ordinal Scale 主題歌 · 2017</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+
+      <a class="song" href="https://www.youtube.com/watch?v=qpqeKHqhMZE" target="_blank">
+        <span class="song-num">18</span>
+        <div class="song-info"><div class="song-name">逆光オーケストラ</div><div class="song-anime">LACE UP 2026 新曲</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>YT</span>
+      </a>
+
+    </div>
+
+    <!-- ENCORE -->
+    <div class="encore-label">— ENCORE —</div>
+    <div class="setlist">
+
+      <a class="song encore" href="https://www.youtube.com/watch?v=search_azarai" target="_blank" onclick="return false;" style="cursor:default;">
+        <span class="song-num">EN1</span>
+        <div class="song-info"><div class="song-name">小豆あらい</div><div class="song-anime">LACE UP 2026 新曲</div></div>
+        <span class="no-yt" style="color:#555">新曲</span>
+      </a>
+
+      <a class="song encore" href="https://www.youtube.com/results?search_query=LiSA+YES+LACE+UP" target="_blank">
+        <span class="song-num">EN2</span>
+        <div class="song-info"><div class="song-name">YES</div><div class="song-anime">LACE UP 2026 新曲</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>搜尋</span>
+      </a>
+
+      <a class="song encore" href="https://www.youtube.com/results?search_query=LiSA+NEW+ME+LACE+UP" target="_blank">
+        <span class="song-num">EN3</span>
+        <div class="song-info"><div class="song-name">NEW ME</div><div class="song-anime">LACE UP 2026 新曲 · 終曲</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>搜尋</span>
+      </a>
+
+    </div>
+
+    <!-- IG CONFIRMED -->
+    <div class="sub-label" style="padding-top:20px">🔥 IG 確認追加 · 台北限定</div>
+    <div class="setlist">
+      <a class="song fire" href="https://www.youtube.com/watch?v=4DxL6IKmXx4" target="_blank">
+        <span class="song-num">+</span>
+        <div class="song-info"><div class="song-name">炎 (Homura)</div><div class="song-anime">劇場版 鬼滅之刃 無限列車編 主題歌 · 2020 · LiSA 本人 IG 確認台北必唱</div></div>
+        <span class="yt-btn"><svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>MV</span>
+      </a>
+    </div>
+
+  </div><!-- end section -->
+
+</div><!-- end container -->
+
+<footer>
+  <div class="container">
+    <p>LiVE is Smile Always ～15～ · ASIA TOUR 2026</p>
+    <p style="margin-top:4px;">資料來源：setlist.fm · MU-HOLIC · LiSA Official · 截至 <strong>2026 / 05 / 06</strong></p>
+    <p style="margin-top:8px;"><a href="https://www.lxixsxa.com" target="_blank">lxixsxa.com</a> · <a href="https://www.youtube.com/channel/UCqEfdEvLG5oQWNYlDQrGlKw" target="_blank">LiSA Official YouTube</a></p>
+    <p style="margin-top:12px;color:#444;font-size:10px;">歌單為預測內容，實際演出以現場為準。新曲 YouTube 連結部分為搜尋頁，請自行尋找官方上架版本。</p>
+  </div>
+</footer>
+
+</body>
+</html>

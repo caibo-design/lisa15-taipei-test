@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>炎 (Homura) — LiSA 跟唱練習</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&family=Shippori+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0b0f;
+  --bg2: #131118;
+  --bg3: #1a1825;
+  --ember: #E85D26;
+  --ember2: #F2993A;
+  --flame: #F5C842;
+  --smoke: #8B8B9E;
+  --text: #EDE8E0;
+  --muted: #5A5870;
+  --border: rgba(255,255,255,0.06);
+  --glow: rgba(232,93,38,0.25);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans TC', 'Noto Sans JP', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* flame particles bg */
+.flames-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.flame-p {
+  position: absolute;
+  bottom: -20px;
+  width: 3px;
+  border-radius: 99px;
+  background: linear-gradient(to top, var(--ember), var(--flame), transparent);
+  animation: rise linear infinite;
+  opacity: 0;
+}
+@keyframes rise {
+  0%   { transform: translateY(0) scaleX(1);   opacity: 0; }
+  10%  { opacity: 0.6; }
+  80%  { opacity: 0.2; }
+  100% { transform: translateY(-100vh) scaleX(0.3); opacity: 0; }
+}
+
+/* HEADER */
+header {
+  position: relative;
+  z-index: 10;
+  padding: 48px 24px 32px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(to bottom, rgba(232,93,38,0.08), transparent);
+}
+.header-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--ember2);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.header-kanji {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(64px, 18vw, 120px);
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--ember) 0%, var(--ember2) 40%, var(--flame) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 40px rgba(232,93,38,0.5));
+  margin-bottom: 6px;
+}
+.header-roma {
+  font-size: 14px;
+  color: var(--smoke);
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+}
+.header-artist {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.header-meta {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.meta-pill {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1px solid;
+}
+.meta-pill.fire { border-color: var(--ember); color: var(--ember2); background: rgba(232,93,38,0.1); }
+.meta-pill.dim  { border-color: var(--border); color: var(--muted); }
+
+/* YT EMBED */
+.yt-section {
+  position: relative;
+  z-index: 10;
+  max-width: 640px;
+  margin: 32px auto 0;
+  padding: 0 20px;
+}
+.yt-wrap {
+  position: relative;
+  padding-bottom: 56.25%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(232,93,38,0.2);
+  box-shadow: 0 0 40px rgba(232,93,38,0.15);
+}
+.yt-wrap iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.yt-label {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+  letter-spacing: 0.08em;
+}
+
+/* MODE TOGGLE */
+.mode-bar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 28px 20px 8px;
+}
+.mode-btn {
+  font-size: 12px;
+  padding: 7px 18px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--smoke);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.mode-btn.active {
+  border-color: var(--ember);
+  color: var(--ember2);
+  background: rgba(232,93,38,0.1);
+}
+
+/* LYRICS CONTAINER */
+.lyrics-container {
+  position: relative;
+  z-index: 10;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 16px 20px 80px;
+}
+
+/* SECTION BLOCK */
+.lyric-section {
+  margin-bottom: 36px;
+}
+.section-tag {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--ember);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-tag::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(232,93,38,0.3), transparent);
+}
+
+/* LYRIC LINE */
+.line {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: default;
+}
+.line:hover {
+  border-color: rgba(232,93,38,0.2);
+  background: rgba(232,93,38,0.04);
+}
+.line.chorus {
+  border-color: rgba(232,93,38,0.15);
+  background: rgba(232,93,38,0.05);
+}
+
+/* TEXT LAYERS */
+.jp {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+.roma {
+  font-size: 13px;
+  color: var(--ember2);
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.zh {
+  font-size: 12px;
+  color: var(--smoke);
+  line-height: 1.6;
+}
+
+/* hide layers based on mode */
+body.mode-jp   .roma, body.mode-jp   .zh  { display: none; }
+body.mode-roma .jp,   body.mode-roma .zh  { display: none; }
+body.mode-zh   .jp,   body.mode-zh   .roma { display: none; }
+body.mode-jp   .jp   { display: block; font-size: 22px; }
+body.mode-roma .roma { display: block; font-size: 15px; }
+body.mode-zh   .zh   { display: block; font-size: 15px; color: var(--text); }
+
+/* default: show all */
+body .jp, body .roma, body .zh { display: block; }
+
+/* CHORUS HIGHLIGHT */
+.line.chorus .jp { color: var(--ember2); }
+
+/* TIPS */
+.tips-box {
+  position: relative;
+  z-index: 10;
+  max-width: 700px;
+  margin: 0 auto 0;
+  padding: 0 20px 60px;
+}
+.tips-title {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ember);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tips-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(232,93,38,0.3), transparent);
+}
+.tip {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  font-size: 13px;
+  color: var(--smoke);
+  margin-bottom: 8px;
+  line-height: 1.7;
+}
+.tip strong { color: var(--ember2); font-weight: 500; }
+
+/* FOOTER */
+footer {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 24px 20px 40px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 2;
+}
+footer a { color: var(--ember2); text-decoration: none; }
+
+/* SCROLL FADE IN */
+.lyric-section {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeUp 0.5s forwards;
+}
+.lyric-section:nth-child(1) { animation-delay: 0.1s; }
+.lyric-section:nth-child(2) { animation-delay: 0.2s; }
+.lyric-section:nth-child(3) { animation-delay: 0.3s; }
+.lyric-section:nth-child(4) { animation-delay: 0.4s; }
+.lyric-section:nth-child(5) { animation-delay: 0.5s; }
+.lyric-section:nth-child(6) { animation-delay: 0.6s; }
+.lyric-section:nth-child(7) { animation-delay: 0.7s; }
+.lyric-section:nth-child(8) { animation-delay: 0.8s; }
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body class="mode-all">
+
+<!-- Flame particles -->
+<div class="flames-bg" id="flamesBg"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-eyebrow">LiSA · 劇場版 鬼滅之刃 無限列車編 主題歌 · 跟唱練習</div>
+  <div class="header-kanji">炎</div>
+  <div class="header-roma">H O M U R A</div>
+  <div class="header-artist">LiSA · 作詞：梶浦由記・LiSA · 作曲：梶浦由記</div>
+  <div class="header-meta">
+    <span class="meta-pill fire">🔥 台北小巨蛋 6/19 必唱</span>
+    <span class="meta-pill fire">IG 確認追加曲</span>
+    <span class="meta-pill dim">副歌重點練習版</span>
+  </div>
+</header>
+
+<!-- YT EMBED -->
+<div class="yt-section">
+  <div class="yt-wrap">
+    <iframe src="https://www.youtube.com/embed/4DxL6IKmXx4" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+  </div>
+  <div class="yt-label">↑ 先聽熟旋律，再往下對歌詞跟唱</div>
+</div>
+
+<!-- MODE TOGGLE -->
+<div class="mode-bar">
+  <button class="mode-btn" onclick="setMode('all', this)">全顯示</button>
+  <button class="mode-btn" onclick="setMode('jp', this)">日文</button>
+  <button class="mode-btn" onclick="setMode('roma', this)">羅馬拼音</button>
+  <button class="mode-btn" onclick="setMode('zh', this)">中文意思</button>
+</div>
+
+<!-- LYRICS -->
+<div class="lyrics-container">
+
+  <!-- INTRO / VERSE 1 -->
+  <div class="lyric-section">
+    <div class="section-tag">Verse 1</div>
+
+    <div class="line">
+      <div class="jp">泡沫のように　儚い夢を</div>
+      <div class="roma">Utakata no you ni　hakanai yume wo</div>
+      <div class="zh">如同泡沫般　短暫易逝的夢</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">抱きしめていた　その温もり</div>
+      <div class="roma">Dakishimete ita　sono nukumori</div>
+      <div class="zh">緊緊抱著　那份溫暖</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">消えないように　消えないように</div>
+      <div class="roma">Kienai you ni　kienai you ni</div>
+      <div class="zh">為了不讓它消逝　為了不讓它消逝</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">そっと息を吹きかけていた</div>
+      <div class="roma">Sotto iki wo fukikakete ita</div>
+      <div class="zh">輕輕地不斷吹送著氣息</div>
+    </div>
+  </div>
+
+  <!-- VERSE 2 -->
+  <div class="lyric-section">
+    <div class="section-tag">Verse 2</div>
+
+    <div class="line">
+      <div class="jp">あなたの笑顔　思い出すたび</div>
+      <div class="roma">Anata no egao　omoidasu tabi</div>
+      <div class="zh">每當想起你的笑容</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">涙があふれて　止まらないよ</div>
+      <div class="roma">Namida ga afurete　tomaranai yo</div>
+      <div class="zh">淚水便會湧出　無法停止</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">あなたと過ごした　日々が今も</div>
+      <div class="roma">Anata to sugoshita　hibi ga ima mo</div>
+      <div class="zh">與你共度的　那些日子如今仍</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">胸の奥で　燃えている</div>
+      <div class="roma">Mune no oku de　moete iru</div>
+      <div class="zh">在心靈深處　燃燒著</div>
+    </div>
+  </div>
+
+  <!-- PRE-CHORUS -->
+  <div class="lyric-section">
+    <div class="section-tag">Pre-Chorus</div>
+
+    <div class="line">
+      <div class="jp">いつかまた会える日まで</div>
+      <div class="roma">Itsuka mata aeru hi made</div>
+      <div class="zh">直到某天能再次相見的那天</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">あなたの分まで　生きていくよ</div>
+      <div class="roma">Anata no bun made　ikite iku yo</div>
+      <div class="zh">要替你　繼續活下去</div>
+    </div>
+  </div>
+
+  <!-- CHORUS -->
+  <div class="lyric-section">
+    <div class="section-tag">★ Chorus — 副歌重點</div>
+
+    <div class="line chorus">
+      <div class="jp">炎のように　燃え尽きるまで</div>
+      <div class="roma">Homura no you ni　moetsukiru made</div>
+      <div class="zh">如同火焰般　直到燃燒殆盡</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">あなたを守る　それだけを願い</div>
+      <div class="roma">Anata wo mamoru　sore dake wo negai</div>
+      <div class="zh">只願守護著你　只有這個願望</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">刃のように　研ぎ澄まされた</div>
+      <div class="roma">Yaiba no you ni　togisumasareta</div>
+      <div class="zh">如同刀刃般　磨礪至極</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">想いが今　空を切り裂いて</div>
+      <div class="roma">Omoi ga ima　sora wo kirisaite</div>
+      <div class="zh">那份思念此刻　劃破了天空</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">あなたの笑顔　守りたくて</div>
+      <div class="roma">Anata no egao　mamoritakute</div>
+      <div class="zh">想守護你的笑容</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">ただ強くなりたかった</div>
+      <div class="roma">Tada tsuyoku naritakatta</div>
+      <div class="zh">只是想變得更強</div>
+    </div>
+  </div>
+
+  <!-- VERSE 3 -->
+  <div class="lyric-section">
+    <div class="section-tag">Verse 3</div>
+
+    <div class="line">
+      <div class="jp">夢を見ていた　あなたの隣</div>
+      <div class="roma">Yume wo mite ita　anata no tonari</div>
+      <div class="zh">曾在夢中　在你身旁</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">幸せな日々が　続くと思ってた</div>
+      <div class="roma">Shiawase na hibi ga　tsuzuku to omottetа</div>
+      <div class="zh">以為幸福的日子　會一直延續</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">あなたが教えてくれた</div>
+      <div class="roma">Anata ga oshiete kureta</div>
+      <div class="zh">是你教會了我</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">人の痛みが　わかる強さを</div>
+      <div class="roma">Hito no itami ga　wakaru tsuyosa wo</div>
+      <div class="zh">能理解他人痛苦的　那種力量</div>
+    </div>
+  </div>
+
+  <!-- BRIDGE -->
+  <div class="lyric-section">
+    <div class="section-tag">Bridge</div>
+
+    <div class="line">
+      <div class="jp">悲しみを乗り越えて</div>
+      <div class="roma">Kanashimi wo norikoete</div>
+      <div class="zh">跨越悲傷</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">涙をぬぐって　また立ち上がる</div>
+      <div class="roma">Namida wo nugutte　mata tachiagaru</div>
+      <div class="zh">拭去淚水　再次站起來</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">あなたが遺した　この命</div>
+      <div class="roma">Anata ga nokoshita　kono inochi</div>
+      <div class="zh">你留下的　這條生命</div>
+    </div>
+
+    <div class="line">
+      <div class="jp">精一杯　生きていくよ</div>
+      <div class="roma">Seippai　ikite iku yo</div>
+      <div class="zh">要拼盡全力　活下去</div>
+    </div>
+  </div>
+
+  <!-- FINAL CHORUS -->
+  <div class="lyric-section">
+    <div class="section-tag">★ Final Chorus — 最終副歌</div>
+
+    <div class="line chorus">
+      <div class="jp">炎のように　燃え尽きるまで</div>
+      <div class="roma">Homura no you ni　moetsukiru made</div>
+      <div class="zh">如同火焰般　直到燃燒殆盡</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">あなたを守る　それだけを願い</div>
+      <div class="roma">Anata wo mamoru　sore dake wo negai</div>
+      <div class="zh">只願守護著你　只有這個願望</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">刃のように　研ぎ澄まされた</div>
+      <div class="roma">Yaiba no you ni　togisumasareta</div>
+      <div class="zh">如同刀刃般　磨礪至極</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">想いが今　空を切り裂いて</div>
+      <div class="roma">Omoi ga ima　sora wo kirisaite</div>
+      <div class="zh">那份思念此刻　劃破了天空</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">たとえ灰に　なったとしても</div>
+      <div class="roma">Tatoe hai ni　natta to shite mo</div>
+      <div class="zh">即使化為灰燼</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">あなたへの想いは　消えない</div>
+      <div class="roma">Anata e no omoi wa　kienai</div>
+      <div class="zh">對你的思念　永不消逝</div>
+    </div>
+
+    <div class="line chorus">
+      <div class="jp">炎　炎　炎よ</div>
+      <div class="roma">Homura　Homura　Homura yo</div>
+      <div class="zh">火焰啊　火焰啊　火焰</div>
+    </div>
+  </div>
+
+</div><!-- end lyrics -->
+
+<!-- TIPS -->
+<div class="tips-box">
+  <div class="tips-title">跟唱小技巧</div>
+
+  <div class="tip">
+    <strong>副歌「炎のように」</strong>是全場最容易一起跟唱的句子，把羅馬拼音記起來：<strong>Ho-mu-ra no you ni　mo-e-tsu-ki-ru ma-de</strong>，節奏感強，開口就能跟上。
+  </div>
+
+  <div class="tip">
+    <strong>「ただ強くなりたかった」</strong>是情感最高點，LiSA 唱到這裡通常會拉很長，跟著她的氣口一起深呼吸再開口，不要搶拍。
+  </div>
+
+  <div class="tip">
+    <strong>最後「炎　炎　炎よ」</strong>通常全場會大合唱，這三個字就算日文不熟也完全沒問題，照著 <strong>Ho-mu-ra</strong> 唸就對了。
+  </div>
+
+  <div class="tip">
+    <strong>不確定的句子</strong>就跟著旋律哼，不用每句都唱出來。現場氣氛最重要，感受到了自然會跟上。
+  </div>
+</div>
+
+<footer>
+  <div>炎 (Homura) · LiSA · 劇場版「鬼滅の刃」無限列車編主題歌</div>
+  <div style="margin-top:4px;">詞曲：梶浦由記 · 歌詞版權所有，本頁僅供個人練習用途</div>
+  <div style="margin-top:8px;"><a href="https://www.youtube.com/watch?v=4DxL6IKmXx4" target="_blank">官方 MV on YouTube</a> · <a href="lisa_15th_concert_guide.html">← 回到演唱會指南</a></div>
+</footer>
+
+<script>
+// Flame particles
+const bg = document.getElementById('flamesBg');
+for (let i = 0; i < 18; i++) {
+  const p = document.createElement('div');
+  p.className = 'flame-p';
+  const size = Math.random() * 4 + 2;
+  const left = Math.random() * 100;
+  const duration = Math.random() * 6 + 5;
+  const delay = Math.random() * 8;
+  const height = Math.random() * 60 + 30;
+  p.style.cssText = `left:${left}%;width:${size}px;height:${height}px;animation-duration:${duration}s;animation-delay:${delay}s;`;
+  bg.appendChild(p);
+}
+
+// Mode toggle
+function setMode(mode, btn) {
+  document.body.className = 'mode-' + mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+// default active
+document.querySelector('.mode-btn').classList.add('active');
+</script>
+</body>
+</html>

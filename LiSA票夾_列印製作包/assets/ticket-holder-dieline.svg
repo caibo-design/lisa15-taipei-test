@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="297.0mm" height="210.0mm" viewBox="0 0 297.0 210.0" version="1.1">
+  <title>LiSA 15th Taipei Ticket Holder Dieline</title>
+  <desc>A4 landscape dieline. Magenta solid lines are cut lines; blue dashed lines are fold lines; gray line is safe artwork boundary.</desc>
+  <defs>
+    <style>
+      .cut-line { fill: none; stroke: #ff00ff; stroke-width: 0.25; vector-effect: non-scaling-stroke; }
+      .fold-line { fill: none; stroke: #0099ff; stroke-width: 0.25; stroke-dasharray: 2 1.5; vector-effect: non-scaling-stroke; }
+      .safe-line { fill: none; stroke: #808080; stroke-width: 0.18; stroke-dasharray: 1.5 1.2; vector-effect: non-scaling-stroke; }
+      .page-line { fill: none; stroke: #cccccc; stroke-width: 0.18; vector-effect: non-scaling-stroke; }
+      .label { font-family: Arial, sans-serif; font-size: 3.2px; fill: #111111; }
+    </style>
+  </defs>
+  <g id="A4_Artboard">
+    <rect class="page-line" x="0.2" y="0.2" width="296.600" height="209.600" />
+  </g>
+  <g id="Safe_Area_Guide">
+    <polyline class="safe-line" points="60.788,5.589 271.940,5.589 271.940,204.411 60.788,204.411 60.788,5.589" />
+  </g>
+  <g id="Fold_Lines">
+      <line x1="58.418" y1="38.359" x2="274.310" y2="38.359" />
+      <line x1="58.418" y1="123.883" x2="274.310" y2="123.883" />
+      <line x1="58.418" y1="37.512" x2="58.418" y2="92.383" />
+      <line x1="274.310" y1="37.512" x2="274.310" y2="92.383" />
+  </g>
+  <g id="Cut_Lines">
+    <polyline class="cut-line" points="58.418,3.218 274.310,3.218 274.310,37.512 295.899,39.883 295.899,90.435 274.310,92.383 274.310,206.782 58.418,206.782 58.418,92.383 36.829,90.435 36.829,39.883 58.418,37.512 58.418,3.218" />
+  </g>
+  <g id="Labels">
+    <text class="label" x="12" y="196">A4 landscape / units: millimeters</text>
+    <text class="label" x="12" y="201">CUT: magenta solid | FOLD: blue dashed | SAFE: gray dashed</text>
+  </g>
+</svg>
