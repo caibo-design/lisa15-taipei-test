@@ -1,10 +1,18 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V7V06TLHDD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V7V06TLHDD');
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LiSA15th台北小巨蛋演唱會-行前懶人包</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ff2f9f'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='28' font-family='Arial' font-weight='900' fill='white'%3E15%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" href="favicon.png">
   <style>
     :root {
       --pink: #ff2f9f;
@@ -115,26 +123,24 @@
       background: var(--ink);
       isolation: isolate;
       text-align: center;
-      border-bottom: 0;
-      margin-bottom: 0;
+      overflow: hidden;
     }
 
     .hero::before {
       content: "";
       position: absolute;
-      inset: 0;
+      inset: -2px;
       z-index: -3;
       background-image: url("素材/669036261_1476090733881363_773819450042997474_n.jpg");
       background-size: cover;
       background-position: center;
-      transform: scale(1.02);
       filter: contrast(1.04) saturate(1.08);
     }
 
     .hero::after {
       content: "";
       position: absolute;
-      inset: 0;
+      inset: -2px;
       z-index: -2;
       background:
         radial-gradient(circle at 50% 50%, rgba(8,7,8,.4) 0%, rgba(8,7,8,.82) 100%);
@@ -155,6 +161,9 @@
     .hero-inner {
       width: min(var(--max), calc(100% - 40px));
       padding: 80px 0 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .hero-event {
@@ -563,7 +572,7 @@
     /* ─── Goods Card ─── */
     .goods-item {
       display: grid;
-      grid-template-columns: 60px 1fr auto;
+      grid-template-columns: 120px 1fr auto;
       align-items: center;
       gap: 12px;
       padding: 14px 16px;
@@ -574,36 +583,80 @@
       box-shadow: 4px 4px 0 rgba(8, 7, 8, .12);
     }
 
+    /* Sized items (expandable) */
+    .goods-item.has-sizes .size-panel {
+      display: none;
+      grid-column: 1 / -1;
+      padding-top: 10px;
+      border-top: 1px dashed var(--line);
+      margin-top: 6px;
+    }
+
+    .goods-item.has-sizes.open .size-panel {
+      display: grid;
+      gap: 8px;
+    }
+
+    .goods-item.has-sizes > .qty-ctrl {
+      display: none;
+    }
+
+    .size-toggle {
+      justify-self: end;
+      padding: 5px 12px;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background .12s;
+    }
+
+    .size-toggle:hover {
+      background: var(--pink);
+      color: var(--paper);
+    }
+
+    .goods-item.has-sizes.open .size-toggle {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .size-line {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .size-line .size-name {
+      font-weight: 900;
+    }
+
     .goods-thumb {
-      width: 60px;
-      height: 60px;
+      width: 120px;
+      align-self: stretch;
       background: var(--silver);
       border: 2px solid var(--ink);
       border-radius: 4px;
       overflow: hidden;
+      display: flex;
+      align-items: center;
     }
 
     .goods-thumb img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      display: block;
     }
 
     .item-price {
       color: var(--pink-deep);
       font-size: 13px;
       font-weight: 900;
-    }
-
-    .size-select {
-      margin-top: 4px;
-      padding: 4px 8px;
-      font-size: 12px;
-      font-weight: 900;
-      border: 2px solid var(--ink);
-      border-radius: 4px;
-      background: var(--paper);
-      cursor: pointer;
     }
 
     .goods-source {
@@ -865,44 +918,6 @@
       box-shadow: 1px 1px 0 var(--ink);
     }
 
-    /* ─── Highlight ─── */
-    .highlight {
-      display: grid;
-      grid-template-columns: .9fr 1.1fr;
-      gap: 32px;
-      align-items: center;
-    }
-
-    .sparkle {
-      overflow: hidden;
-      border: 2px solid var(--ink);
-      border-radius: 8px;
-      box-shadow: 8px 8px 0 var(--pink);
-      transform: rotate(-1deg);
-    }
-
-    .million {
-      padding: 34px;
-      background: #fff;
-      border: 2px solid var(--ink);
-      border-radius: 8px;
-    }
-
-    .million .number {
-      color: var(--pink);
-      font-size: clamp(56px, 10vw, 128px);
-      font-weight: 900;
-      line-height: .85;
-      letter-spacing: 0;
-    }
-
-    .million p {
-      margin: 18px 0 0;
-      color: #4c454a;
-      font-size: 18px;
-      font-weight: 800;
-    }
-
     /* ─── Footer ─── */
     .footer {
       padding: 36px 0 52px;
@@ -954,8 +969,7 @@
 
       .setlist-layout,
       .download-band,
-      .goods-layout,
-      .highlight {
+      .goods-layout {
         grid-template-columns: 1fr;
       }
 
@@ -1041,14 +1055,13 @@
       }
 
       .goods-item {
-        grid-template-columns: 50px 1fr auto;
+        grid-template-columns: 90px 1fr auto;
         gap: 8px;
         padding: 10px 12px;
       }
 
       .goods-thumb {
-        width: 50px;
-        height: 50px;
+        width: 90px;
       }
 
     }
@@ -1058,14 +1071,14 @@
   <div class="site-shell">
     <header class="topbar" aria-label="網站導覽">
       <a class="brand" href="#top" aria-label="回到首頁">
-        <span class="brand-mark">15</span>
-        <span>LiSA 台北場粉絲資源站</span>
+        <img class="brand-mark" src="favicon.png" alt="15" style="width:34px;height:34px;border-radius:6px;object-fit:cover;transform:rotate(-6deg)">
+        <span>LiSA15th台北小巨蛋演唱會-行前懶人包</span>
       </a>
       <nav class="nav">
         <a href="#setlist">歌單預測</a>
         <a href="#checklist">入場確認</a>
         <a href="#ticket">卡套下載</a>
-        <a href="#goods">周邊販售</a>
+        <a href="#goods">敗家試算</a>
       </nav>
     </header>
 
@@ -1075,7 +1088,7 @@
         <div class="hero-inner">
           <div class="hero-event">
             <div class="title">LiVE is Smile Always<span>～15～</span></div>
-            <div class="date">2026.06.19 FRI — 19:00 START</div>
+            <div class="date">2026.06.19 FRI 19:00 ／ 06.20 SAT 17:00</div>
             <div class="venue">Taipei Arena 台北小巨蛋 · 亞洲巡迴第一站</div>
           </div>
 
@@ -1086,17 +1099,17 @@
             <div class="timebox"><strong id="seconds">--</strong><span>Seconds</span></div>
           </div>
 
-          <button class="btn-cal" onclick="addToCalendar()">+ 加入行事曆</button>
+          <button class="btn-cal" onclick="addToCalendar();gtag('event','click_calendar')">+ 加入行事曆</button>
         </div>
       </section>
 
       <section class="section quick-nav-section" id="quick-nav">
         <div class="wrap">
           <div class="hero-actions">
-            <a class="button primary" href="#setlist">歌單預測</a>
-            <a class="button" href="#checklist">入場確認</a>
-            <a class="button" href="#ticket">卡套下載</a>
-            <a class="button" href="#goods">周邊販售</a>
+            <a class="button primary" href="#setlist" onclick="gtag('event','click_nav',{label:'歌單預測'})">歌單預測</a>
+            <a class="button" href="#checklist" onclick="gtag('event','click_nav',{label:'入場確認'})">入場確認</a>
+            <a class="button" href="#ticket" onclick="gtag('event','click_nav',{label:'卡套下載'})">卡套下載</a>
+            <a class="button" href="#goods" onclick="gtag('event','click_nav',{label:'敗家試算'})">敗家試算</a>
           </div>
         </div>
       </section>
@@ -1109,8 +1122,8 @@
               <h2>必唱歌曲預測</h2>
             </div>
             <div>
-              <button class="copy-list-btn" onclick="copySetlist()">複製歌曲清單</button>
-              <p class="section-note" style="margin-top:12px">依照過往歌單預測，台北場仍可能調整，僅供參考</p>
+              <button class="copy-list-btn" onclick="copySetlist();gtag('event','click_copy_setlist')">複製歌曲清單</button>
+              <p class="section-note" style="margin-top:12px">依照過往歌單預測，不負責任預測ＸＤ</p>
             </div>
           </div>
 
@@ -1270,7 +1283,7 @@
               <li>票插入即可帶去現場</li>
             </ul>
             <div class="hero-actions">
-              <a class="button primary" href="assets/ticket.pdf">下載 PDF</a>
+              <a class="button primary" href="assets/ticket.pdf" onclick="gtag('event','click_download_pdf')">下載 PDF</a>
             </div>
           </div>
         </div>
@@ -1281,9 +1294,9 @@
           <div class="section-head">
             <div>
               <div class="eyebrow">Official Goods</div>
-              <h2>周邊販售</h2>
+              <h2>敗家試算表</h2>
             </div>
-            <p class="section-note">先選好想買的品項與數量，填完可複製清單帶去現場。</p>
+            <p class="section-note">先算一下準備要噴多少錢！？</p>
           </div>
 
           <div class="goods-layout">
@@ -1291,26 +1304,35 @@
               <img src="素材/ig_DXgqGSdiCzG_1.jpg" alt="LiSA 15th Asia Tour official goods list">
             </div>
             <div class="goods-list" id="goods-list">
-              <div class="goods-item" data-name="ASiA T-shirt" data-price="1200">
+              <div class="goods-item has-sizes" data-name="ASiA T-shirt" data-price="1200">
                 <div class="goods-thumb"><img src="素材/LiSA_goods_clean/01_ASiA_T-shirt.jpg" alt="ASiA T-shirt"></div>
-                <div class="item-name">ASiA T-shirt <div class="item-price">TWD 1,200</div>
-                  <select class="size-select"><option value="M">M</option><option value="L">L</option><option value="XL">XL</option></select>
+                <div class="item-name">ASiA T-shirt <div class="item-price">TWD 1,200</div></div>
+                <button class="size-toggle" onclick="toggleSizes(this)">選尺寸 ▾</button>
+                <div class="size-panel">
+                  <div class="size-line"><span class="size-name">M</span><div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num" data-size="M">0</span><button onclick="qtyChange(this,1)">+</button></div></div>
+                  <div class="size-line"><span class="size-name">L</span><div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num" data-size="L">0</span><button onclick="qtyChange(this,1)">+</button></div></div>
+                  <div class="size-line"><span class="size-name">XL</span><div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num" data-size="XL">0</span><button onclick="qtyChange(this,1)">+</button></div></div>
                 </div>
-                <div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num">0</span><button onclick="qtyChange(this,1)">+</button></div>
               </div>
-              <div class="goods-item" data-name="15 T-shirt" data-price="1200">
+              <div class="goods-item has-sizes" data-name="15 T-shirt" data-price="1200">
                 <div class="goods-thumb"><img src="素材/LiSA_goods_clean/02_15_T-shirt.jpg" alt="15 T-shirt"></div>
-                <div class="item-name">15 T-shirt <div class="item-price">TWD 1,200</div>
-                  <select class="size-select"><option value="M">M</option><option value="L">L</option><option value="XL">XL</option></select>
+                <div class="item-name">15 T-shirt <div class="item-price">TWD 1,200</div></div>
+                <button class="size-toggle" onclick="toggleSizes(this)">選尺寸 ▾</button>
+                <div class="size-panel">
+                  <div class="size-line"><span class="size-name">M</span><div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num" data-size="M">0</span><button onclick="qtyChange(this,1)">+</button></div></div>
+                  <div class="size-line"><span class="size-name">L</span><div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num" data-size="L">0</span><button onclick="qtyChange(this,1)">+</button></div></div>
+                  <div class="size-line"><span class="size-name">XL</span><div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num" data-size="XL">0</span><button onclick="qtyChange(this,1)">+</button></div></div>
                 </div>
-                <div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num">0</span><button onclick="qtyChange(this,1)">+</button></div>
               </div>
-              <div class="goods-item" data-name="15 T-shirt (BLACK)" data-price="1400">
+              <div class="goods-item has-sizes" data-name="15 T-shirt (BLACK)" data-price="1400">
                 <div class="goods-thumb"><img src="素材/LiSA_goods_clean/03_15_T-shirt_BLACK.jpg" alt="15 T-shirt BLACK"></div>
-                <div class="item-name">15 T-shirt (BLACK) <div class="item-price">TWD 1,400</div>
-                  <select class="size-select"><option value="M">M</option><option value="L">L</option><option value="XL">XL</option></select>
+                <div class="item-name">15 T-shirt (BLACK) <div class="item-price">TWD 1,400</div></div>
+                <button class="size-toggle" onclick="toggleSizes(this)">選尺寸 ▾</button>
+                <div class="size-panel">
+                  <div class="size-line"><span class="size-name">M</span><div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num" data-size="M">0</span><button onclick="qtyChange(this,1)">+</button></div></div>
+                  <div class="size-line"><span class="size-name">L</span><div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num" data-size="L">0</span><button onclick="qtyChange(this,1)">+</button></div></div>
+                  <div class="size-line"><span class="size-name">XL</span><div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num" data-size="XL">0</span><button onclick="qtyChange(this,1)">+</button></div></div>
                 </div>
-                <div class="qty-ctrl"><button onclick="qtyChange(this,-1)">−</button><span class="qty-num">0</span><button onclick="qtyChange(this,1)">+</button></div>
               </div>
               <div class="goods-item" data-name="HAPPi" data-price="1800">
                 <div class="goods-thumb"><img src="素材/LiSA_goods_clean/04_HAPPi.jpg" alt="HAPPi"></div>
@@ -1398,32 +1420,22 @@
                 <span class="total-price" id="total-price">NT$0</span>
               </div>
 
-              <button class="copy-list-btn" onclick="copyGoodsList()">複製購買清單</button>
+              <div style="display:flex;gap:8px;margin-top:16px;align-items:stretch">
+                <button class="copy-list-btn" style="margin:0;background:var(--paper);color:var(--ink);font-size:12px;padding:6px 12px;flex:0 0 auto" onclick="clearGoods();gtag('event','click_clear_goods')">清除全部</button>
+                <button class="copy-list-btn" style="margin:0;flex:1;text-align:center;justify-content:center" onclick="copyGoodsList();gtag('event','click_copy_goods')">複製購買清單</button>
+              </div>
               <p class="goods-source">資訊來源：<a href="https://www.instagram.com/p/DXgqGSdiCzG/" target="_blank" rel="noreferrer">好玩專賣店 Instagram</a></p>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="section">
-        <div class="wrap highlight">
-          <div class="sparkle">
-            <img src="素材/667863751_1476061287217641_1401771218230708810_n.jpg" alt="DECOTORA15 one million views visual">
-          </div>
-          <div class="million">
-            <div class="eyebrow">Highlight</div>
-            <div class="number">1,000,000</div>
-            <p>DECOTORA15 破百萬觀看可以做成中段亮點，讓頁面在資訊之外也保留慶祝感。</p>
-          </div>
-        </div>
-      </section>
     </main>
 
     <footer class="footer">
       <div class="wrap">
-        <p>Made by @caibo_design · 非官方粉絲網站設計提案</p>
-        <p>資料與實際演出資訊仍以主辦、官方公告與現場為準。</p>
-        <p><a href="https://www.instagram.com/caibo_design/" target="_blank" rel="noreferrer">Instagram</a></p>
+        <p>本站來自一個喜愛LiSA多年的宅宅熱心製作，非官方粉絲網站，內容僅供參考。<br>所有官方圖片、視覺素材及相關版權歸LiSA 所有。歌單資料根據日本場次整理，台北場實際演出以現場為準。本站不以任何形式營利。</p>
+        <p>製作：@caibo_design｜有任何建議或合作歡迎 <a href="https://www.instagram.com/caibo_design/" target="_blank" rel="noreferrer">IG 私訊</a></p>
       </div>
     </footer>
   </div>
@@ -1504,6 +1516,13 @@
       });
     }
 
+    // Toggle size panel
+    function toggleSizes(btn) {
+      var item = btn.closest('.goods-item');
+      item.classList.toggle('open');
+      btn.textContent = item.classList.contains('open') ? '收合 ▴' : '選尺寸 ▾';
+    }
+
     // Goods quantity + price
     function qtyChange(btn, delta) {
       var numEl = btn.parentElement.querySelector('.qty-num');
@@ -1518,10 +1537,19 @@
       var total = 0;
       items.forEach(function(item) {
         var price = parseInt(item.dataset.price) || 0;
-        var qty = parseInt(item.querySelector('.qty-num').textContent);
-        total += qty * price;
+        item.querySelectorAll('.qty-num').forEach(function(q) {
+          total += parseInt(q.textContent) * price;
+        });
       });
       document.getElementById('total-price').textContent = 'NT$' + total.toLocaleString();
+    }
+
+    // Clear all goods
+    function clearGoods() {
+      document.querySelectorAll('#goods-list .qty-num').forEach(function(el) {
+        el.textContent = '0';
+      });
+      calcTotal();
     }
 
     // Copy goods list
@@ -1530,13 +1558,23 @@
       var lines = [];
       var total = 0;
       items.forEach(function(item) {
-        var qty = parseInt(item.querySelector('.qty-num').textContent);
-        if (qty > 0) {
-          var price = parseInt(item.dataset.price) || 0;
-          var sizeEl = item.querySelector('.size-select');
-          var size = sizeEl ? ' (' + sizeEl.value + ')' : '';
-          lines.push(item.dataset.name + size + ' x' + qty + ' = NT$' + (price * qty).toLocaleString());
-          total += price * qty;
+        var price = parseInt(item.dataset.price) || 0;
+        var name = item.dataset.name;
+        if (item.classList.contains('has-sizes')) {
+          item.querySelectorAll('.qty-num').forEach(function(q) {
+            var qty = parseInt(q.textContent);
+            if (qty > 0) {
+              var size = q.dataset.size || '';
+              lines.push(name + ' (' + size + ') x' + qty + ' = NT$' + (price * qty).toLocaleString());
+              total += price * qty;
+            }
+          });
+        } else {
+          var qty = parseInt(item.querySelector('.qty-num').textContent);
+          if (qty > 0) {
+            lines.push(name + ' x' + qty + ' = NT$' + (price * qty).toLocaleString());
+            total += price * qty;
+          }
         }
       });
       if (lines.length === 0) {
@@ -1551,6 +1589,21 @@
         setTimeout(function() { btn.textContent = orig; }, 1500);
       });
     }
+    // GA4: track YT song clicks
+    document.querySelectorAll('.song[href]').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var name = el.querySelector('strong') ? el.querySelector('strong').textContent : '';
+        gtag('event', 'click_song_yt', { song_name: name });
+      });
+    });
+
+    // GA4: track checklist checks
+    document.querySelectorAll('.check input').forEach(function(el) {
+      el.addEventListener('change', function() {
+        var label = el.closest('.check').querySelector('strong') ? el.closest('.check').querySelector('strong').textContent : '';
+        gtag('event', 'check_item', { item: label, checked: el.checked });
+      });
+    });
   </script>
 </body>
 </html>
