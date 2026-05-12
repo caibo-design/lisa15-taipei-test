@@ -1551,7 +1551,7 @@
 
     <footer class="footer">
       <div class="wrap">
-        <p>本站來自一個喜愛LiSA多年的宅宅熱心製作，非官方粉絲網站，內容僅供參考。<br>所有官方圖片、視覺素材及相關版權歸LiSA 所有。歌單資料根據日本場次整理，台北場實際演出以現場為準。本站不以任何形式營利。</p>
+        <p>本站來自一個喜愛LiSA多年的宅宅熱心製作，非官方粉絲網站，內容僅供參考。<br>所有官方圖片、視覺素材及相關版權歸LiSA 所有。本站不以任何形式營利。</p>
         <p>製作：@caibo_design｜有任何建議或合作歡迎 <a href="https://www.instagram.com/caibo_design/" target="_blank" rel="noreferrer">IG 私訊</a></p>
       </div>
     </footer>
@@ -1751,10 +1751,20 @@
       }
       var text = 'LiSA 15th 周邊購買清單\n\n' + lines.join('\n') + '\n\n合計：NT$' + total.toLocaleString();
       navigator.clipboard.writeText(text).then(function() {
+        // Inline copy button feedback
         var btn = document.querySelector('#goods-list .copy-list-btn');
-        var orig = btn.textContent;
-        btn.textContent = '已複製！';
-        setTimeout(function() { btn.textContent = orig; }, 1500);
+        if (btn) {
+          var orig = btn.textContent;
+          btn.textContent = '已複製！';
+          setTimeout(function() { btn.textContent = orig; }, 1500);
+        }
+        // Sticky bar clear button feedback
+        var stickyClr = document.querySelector('#goods-sticky .sticky-btn.secondary');
+        if (stickyClr) {
+          var origClr = stickyClr.textContent;
+          stickyClr.textContent = '已複製！';
+          setTimeout(function() { stickyClr.textContent = origClr; }, 1500);
+        }
       });
     }
     // Smooth scroll to section heading (not section top)
@@ -1780,22 +1790,36 @@
       });
     });
 
-    // Goods sticky bar — show when #goods section is in view
+    // Goods sticky bar — show when #goods is in view, hide when inline total is visible
     (function() {
       var goodsSection = document.getElementById('goods');
+      var goodsTotal = document.querySelector('.goods-total');
       var stickyBar = document.getElementById('goods-sticky');
-      if (goodsSection && stickyBar) {
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              stickyBar.classList.add('visible');
-            } else {
-              stickyBar.classList.remove('visible');
-            }
-          });
-        }, { threshold: 0.05 });
-        observer.observe(goodsSection);
+      if (!goodsSection || !goodsTotal || !stickyBar) return;
+
+      var sectionIn = false;
+      var totalIn = false;
+
+      function updateSticky() {
+        if (sectionIn && !totalIn) {
+          stickyBar.classList.add('visible');
+        } else {
+          stickyBar.classList.remove('visible');
+        }
       }
+
+      var sectionObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) { sectionIn = entry.isIntersecting; });
+        updateSticky();
+      }, { threshold: 0.05 });
+
+      var totalObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) { totalIn = entry.isIntersecting; });
+        updateSticky();
+      }, { threshold: 0 });
+
+      sectionObs.observe(goodsSection);
+      totalObs.observe(goodsTotal);
     })();
 
     // GA4: track checklist checks
