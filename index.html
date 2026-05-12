@@ -10,7 +10,7 @@
     gtag('config', 'G-V7V06TLHDD');
   </script>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>LiSA15th台北小巨蛋演唱會-行前懶人包</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
@@ -64,7 +64,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 12px max(20px, calc((100vw - var(--max)) / 2));
+      padding: calc(12px + env(safe-area-inset-top, 0px)) max(20px, calc((100vw - var(--max)) / 2)) 12px;
       color: var(--paper);
       background: rgba(8, 7, 8, .74);
       border-bottom: 1px solid var(--white-line);
@@ -78,7 +78,7 @@
       min-width: 0;
       font-weight: 900;
       letter-spacing: .02em;
-      text-transform: uppercase;
+      text-decoration: none;
     }
 
     .brand-mark {
@@ -199,11 +199,18 @@
       letter-spacing: .06em;
     }
 
+    .cal-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
     .btn-cal {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      margin-bottom: 32px;
       padding: 8px 16px;
       color: var(--paper);
       background: rgba(255,255,255,.1);
@@ -213,6 +220,7 @@
       font-weight: 900;
       cursor: pointer;
       transition: all .16s;
+      text-decoration: none;
     }
 
     .btn-cal:hover {
@@ -225,13 +233,13 @@
       display: inline-grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      max-width: 520px;
+      max-width: 400px;
       width: 100%;
       margin-bottom: 36px;
     }
 
     .timebox {
-      padding: 14px 10px;
+      padding: 10px 6px;
       color: var(--paper);
       background: rgba(8, 7, 8, .72);
       border: 1px solid var(--white-line);
@@ -243,15 +251,14 @@
     .timebox strong {
       display: block;
       color: var(--pink);
-      font-size: clamp(32px, 6vw, 60px);
+      font-size: clamp(28px, 5.5vw, 52px);
       line-height: 1;
     }
 
     .timebox span {
       font-size: 11px;
       font-weight: 900;
-      letter-spacing: .12em;
-      text-transform: uppercase;
+      letter-spacing: .06em;
     }
 
     .hero-actions {
@@ -508,7 +515,7 @@
       padding: 10px 14px;
       color: var(--paper);
       background: rgba(255,255,255,.05);
-      border: 1px solid var(--white-line);
+      border: 2px solid var(--white-line);
       border-radius: 6px;
       text-decoration: none;
     }
@@ -603,13 +610,16 @@
 
     .size-toggle {
       justify-self: end;
-      padding: 5px 12px;
+      width: 100px;
+      min-height: 32px;
+      padding: 5px 0;
       background: var(--paper);
       border: 2px solid var(--ink);
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 900;
       cursor: pointer;
+      text-align: center;
       transition: background .12s;
     }
 
@@ -918,6 +928,94 @@
       box-shadow: 1px 1px 0 var(--ink);
     }
 
+    /* ─── Goods Sticky Bar ─── */
+    .goods-sticky {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 19;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px max(20px, calc((100vw - var(--max)) / 2));
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      background: rgba(8, 7, 8, .92);
+      border-top: 1px solid var(--white-line);
+      backdrop-filter: blur(14px);
+      transform: translateY(100%);
+      transition: transform .28s ease;
+    }
+
+    .goods-sticky.visible {
+      transform: translateY(0);
+    }
+
+    .goods-sticky .sticky-price {
+      color: var(--pink);
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .goods-sticky .sticky-label {
+      color: var(--silver);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .goods-sticky .sticky-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .goods-sticky .sticky-btn {
+      padding: 8px 14px;
+      border: 2px solid var(--paper);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background .12s, color .12s;
+      white-space: nowrap;
+    }
+
+    .goods-sticky .sticky-btn.secondary {
+      background: transparent;
+      color: var(--paper);
+    }
+
+    .goods-sticky .sticky-btn.secondary:hover {
+      background: rgba(255,255,255,.12);
+    }
+
+    .goods-sticky .sticky-btn.primary {
+      background: var(--pink);
+      color: var(--ink);
+      border-color: var(--pink);
+    }
+
+    .goods-sticky .sticky-btn.primary:hover {
+      background: var(--pink-deep);
+    }
+
+    @media (max-width: 620px) {
+      .goods-sticky {
+        padding-inline: 14px;
+        gap: 8px;
+      }
+
+      .goods-sticky .sticky-btn {
+        padding: 7px 10px;
+        font-size: 11px;
+      }
+
+      .goods-sticky .sticky-price {
+        font-size: 17px;
+      }
+    }
+
     /* ─── Footer ─── */
     .footer {
       padding: 36px 0 52px;
@@ -1005,15 +1103,17 @@
         width: min(100% - 28px, var(--max));
       }
 
-      .hero-actions {
+      .quick-nav-section .hero-actions {
         display: grid;
+        grid-template-columns: repeat(2, 1fr);
       }
 
-      .button {
+      .quick-nav-section .button {
         width: 100%;
+        font-size: 13px;
+        padding: 10px 8px;
       }
 
-      .countdown,
       .info-grid,
       .check-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1089,17 +1189,20 @@
           <div class="hero-event">
             <div class="title">LiVE is Smile Always<span>～15～</span></div>
             <div class="date">2026.06.19 FRI 19:00 ／ 06.20 SAT 17:00</div>
-            <div class="venue">Taipei Arena 台北小巨蛋 · 亞洲巡迴第一站</div>
+            <div class="venue">Taipei Arena 台北小巨蛋</div>
           </div>
 
           <div class="countdown" aria-label="距離開演倒數">
-            <div class="timebox"><strong id="days">--</strong><span>Days</span></div>
-            <div class="timebox"><strong id="hours">--</strong><span>Hours</span></div>
-            <div class="timebox"><strong id="minutes">--</strong><span>Minutes</span></div>
-            <div class="timebox"><strong id="seconds">--</strong><span>Seconds</span></div>
+            <div class="timebox"><strong id="days">--</strong><span>天</span></div>
+            <div class="timebox"><strong id="hours">--</strong><span>時</span></div>
+            <div class="timebox"><strong id="minutes">--</strong><span>分</span></div>
+            <div class="timebox"><strong id="seconds">--</strong><span>秒</span></div>
           </div>
 
-          <button class="btn-cal" onclick="addToCalendar();gtag('event','click_calendar')">+ 加入行事曆</button>
+          <div class="cal-row">
+            <button class="btn-cal" onclick="addToCalendar('day1');gtag('event','click_calendar',{label:'6/19'})">+ 6/19（五）加入行事曆</button>
+            <button class="btn-cal" onclick="addToCalendar('day2');gtag('event','click_calendar',{label:'6/20'})">+ 6/20（六）加入行事曆</button>
+          </div>
         </div>
       </section>
 
@@ -1119,11 +1222,11 @@
           <div class="section-head">
             <div>
               <div class="eyebrow">Setlist Preview</div>
-              <h2>必唱歌曲預測</h2>
+              <h2>歌單預測</h2>
             </div>
-            <div>
+            <div style="text-align:right">
               <button class="copy-list-btn" onclick="copySetlist();gtag('event','click_copy_setlist')">複製歌曲清單</button>
-              <p class="section-note" style="margin-top:12px">依照過往歌單預測，不負責任預測ＸＤ</p>
+              <p class="section-note" style="margin-top:12px;margin-left:auto">根據武道館場整理，不負責任預測</p>
             </div>
           </div>
 
@@ -1140,85 +1243,88 @@
             </div>
 
             <div>
-              <div class="song-group-label">必學 <span class="confirmed-tag">LiSA IG 確定</span></div>
+              <div class="song-group-label">台北追加確定 <span class="confirmed-tag">LiSA IG 確定</span></div>
               <div class="song-list">
-                <a class="song hot" href="https://www.youtube.com/watch?v=4DxL6IKmXx4" target="_blank" rel="noreferrer">
-                  <b>★</b><span><strong>炎 Homura</strong><small>劇場版鬼滅之刃 無限列車編</small><span class="reason">IG 確定演出</span></span><em>YT</em>
+                <a class="song hot" href="https://www.youtube.com/watch?v=4DxL6IKmXx4" target="_blank" rel="noreferrer" onclick="gtag('event','click_song_yt',{song_name:'炎 Homura'})">
+                  <b>★</b><span><strong>炎 Homura</strong><small>劇場版鬼滅之刃 無限列車編</small><span class="reason">大熱必唱・IG確認</span></span><em>YT</em>
                 </a>
               </div>
 
               <div class="song-group-label" style="margin-top:28px">主歌單</div>
               <div class="song-list">
                 <a class="song" href="https://www.youtube.com/watch?v=0-tAKgpuTos" target="_blank" rel="noreferrer">
-                  <b>01</b><span><strong>best day, best way</strong><small>2013 開場曲</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>01</b><span><strong>best day, best way</strong><small>2013</small><span class="reason">經典必唱</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=0ommdvHydlA" target="_blank" rel="noreferrer">
-                  <b>02</b><span><strong>Merry Hurry Berry</strong><small>LACE UP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>02</b><span><strong>Merry Hurry Berry</strong><small>LACE UP</small><span class="reason">新專輯</span></span><em>YT</em>
+                </a>
+                <a class="song" href="https://www.youtube.com/watch?v=cVKb_oerO7w" target="_blank" rel="noreferrer">
+                  <b>03</b><span><strong>Rising Hope</strong><small>魔法科高中の劣等生 OP</small><span class="reason">經典必唱</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=OcNSFV5Io0Q" target="_blank" rel="noreferrer">
-                  <b>03</b><span><strong>oath sign</strong><small>Fate/Zero OP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>04</b><span><strong>oath sign</strong><small>Fate/Zero OP</small><span class="reason">經典必唱</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=1aPOj0ERTEc" target="_blank" rel="noreferrer">
-                  <b>04</b><span><strong>crossing field</strong><small>Sword Art Online OP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>05</b><span><strong>crossing field</strong><small>SAO OP</small><span class="reason">經典必唱</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=jaDJ0Zh3QHM" target="_blank" rel="noreferrer">
-                  <b>05</b><span><strong>träumerei</strong><small>Charlotte ED</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>06</b><span><strong>träumerei</strong><small>Charlotte ED</small><span class="reason">經典必唱</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=CwkzK-F0Y00" target="_blank" rel="noreferrer">
-                  <b>06</b><span><strong>紅蓮華 Gurenge</strong><small>鬼滅之刃 OP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>07</b><span><strong>紅蓮華 Gurenge</strong><small>鬼滅之刃 OP</small><span class="reason">大熱必唱</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=v2tmzEuVEz8" target="_blank" rel="noreferrer">
-                  <b>07</b><span><strong>ADAMAS</strong><small>SAO Alicization OP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>08</b><span><strong>ADAMAS</strong><small>SAO Alicization OP</small><span class="reason">經典必唱</span></span><em>YT</em>
                 </a>
                 <div class="song muted">
-                  <b>08</b><span><strong>赤い罠（ホーンセッションver）</strong><small>特別編曲・現場限定</small><span class="reason">4/4場 100%</span></span><em class="dim">LIVE</em>
+                  <b>09</b><span><strong>赤い罠（ホーンセッションver）</strong><small>特別編曲</small><span class="reason">現場限定</span></span><em class="dim">LIVE</em>
                 </div>
                 <a class="song" href="https://www.youtube.com/watch?v=56aCZIEm9fc" target="_blank" rel="noreferrer">
-                  <b>09</b><span><strong>HADASHi NO STEP</strong><small>LANDER 2021</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>10</b><span><strong>HADASHi NO STEP</strong><small>LANDER 2021</small><span class="reason">經典必唱</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=FA81c8tINy0" target="_blank" rel="noreferrer">
-                  <b>10</b><span><strong>BRiGHT FLiGHT</strong><small>魔法科高中 ED</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>11</b><span><strong>BRiGHT FLiGHT</strong><small>魔法科高中の劣等生 ED</small><span class="reason">經典必唱</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=q2quOm1v970" target="_blank" rel="noreferrer">
-                  <b>11</b><span><strong>Letters to ME</strong><small>LADYBUG 2021</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>12</b><span><strong>Letters to ME</strong><small>LACE UP</small><span class="reason">新專輯</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=tEEiD913Q3Y" target="_blank" rel="noreferrer">
-                  <b>12</b><span><strong>Patch Walk</strong><small>2025</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>13</b><span><strong>Patch Walk</strong><small>2025</small><span class="reason">新曲</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=PHOlqCPTtOc" target="_blank" rel="noreferrer">
-                  <b>13</b><span><strong>DECOTORA15</strong><small>LACE UP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>14</b><span><strong>DECOTORA15</strong><small>LACE UP</small><span class="reason">新專輯</span></span><em>YT</em>
                 </a>
-                <a class="song" href="https://www.youtube.com/channel/UCqEfdEvLG5oQWNYlDQrGlKw" target="_blank" rel="noreferrer">
-                  <b>14</b><span><strong>rapid life シンドローム</strong><small>LACE UP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                <a class="song" href="https://www.youtube.com/watch?v=A5ftAQBFjQc" target="_blank" rel="noreferrer">
+                  <b>15</b><span><strong>rapid life シンドローム</strong><small>LACE UP</small><span class="reason">新專輯</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=cEvhPxb5vw0" target="_blank" rel="noreferrer">
-                  <b>15</b><span><strong>QUEEN</strong><small>2024</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>16</b><span><strong>QUEEN</strong><small>2024</small><span class="reason">近期單曲</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=fR7e0N1UkRI" target="_blank" rel="noreferrer">
-                  <b>16</b><span><strong>Shouted Serenade</strong><small>魔法科高中 S3 OP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>17</b><span><strong>Shouted Serenade</strong><small>魔法科高中の劣等生 第3期 OP</small><span class="reason">近期單曲</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=LJkn2qqtijk" target="_blank" rel="noreferrer">
-                  <b>17</b><span><strong>Catch the Moment</strong><small>SAO Ordinal Scale</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>18</b><span><strong>Catch the Moment</strong><small>劇場版 SAO Ordinal Scale</small><span class="reason">經典必唱</span></span><em>YT</em>
                 </a>
-                <a class="song" href="https://www.youtube.com/channel/UCqEfdEvLG5oQWNYlDQrGlKw" target="_blank" rel="noreferrer">
-                  <b>18</b><span><strong>逆光オーケストラ</strong><small>LACE UP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                <a class="song" href="https://www.youtube.com/watch?v=YywVuque6NU" target="_blank" rel="noreferrer">
+                  <b>19</b><span><strong>逆光オーケストラ</strong><small>LACE UP</small><span class="reason">新專輯</span></span><em>YT</em>
                 </a>
               </div>
 
               <div class="song-group-label" style="margin-top:28px">安可 Encore</div>
               <div class="song-list">
-                <a class="song" href="https://www.youtube.com/channel/UCqEfdEvLG5oQWNYlDQrGlKw" target="_blank" rel="noreferrer">
-                  <b>EN1</b><span><strong>小豆あらい</strong><small>LACE UP feat. MAISONdes</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                <a class="song" href="https://www.youtube.com/watch?v=Z14czb55DDo" target="_blank" rel="noreferrer">
+                  <b>EN1</b><span><strong>小豆あらい</strong><small>LACE UP feat. MAISONdes</small><span class="reason">新專輯</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=RcbIrViPmE4" target="_blank" rel="noreferrer">
-                  <b>EN2</b><span><strong>YES</strong><small>LACE UP</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>EN2</b><span><strong>YES</strong><small>LACE UP</small><span class="reason">新專輯</span></span><em>YT</em>
                 </a>
                 <a class="song" href="https://www.youtube.com/watch?v=UQYMJ-aRlHo" target="_blank" rel="noreferrer">
-                  <b>EN3</b><span><strong>NEW ME</strong><small>LACE UP 終曲</small><span class="reason">4/4場 100%</span></span><em>YT</em>
+                  <b>EN3</b><span><strong>NEW ME</strong><small>LACE UP 終曲</small><span class="reason">新專輯</span></span><em>YT</em>
                 </a>
               </div>
 
-              <p class="setlist-source">所有連結均來自 <a href="https://www.youtube.com/channel/UCqEfdEvLG5oQWNYlDQrGlKw" target="_blank" rel="noreferrer">LiSA Official YouTube</a></p>
+              <p class="setlist-source">資料來源：<a href="https://www.setlist.fm/" target="_blank" rel="noreferrer">setlist.fm</a>（武道館 4/17・4/18、神戸 4/28・4/29）｜所有連結來自 <a href="https://www.youtube.com/channel/UCqEfdEvLG5oQWNYlDQrGlKw" target="_blank" rel="noreferrer">LiSA Official YouTube</a></p>
             </div>
           </div>
         </div>
@@ -1432,6 +1538,17 @@
 
     </main>
 
+    <div class="goods-sticky" id="goods-sticky">
+      <div>
+        <div class="sticky-label">預估總價</div>
+        <div class="sticky-price" id="sticky-total">NT$0</div>
+      </div>
+      <div class="sticky-actions">
+        <button class="sticky-btn secondary" onclick="clearGoods();gtag('event','click_clear_goods')">清除全部</button>
+        <button class="sticky-btn primary" onclick="copyGoodsList();gtag('event','click_copy_goods')">複製購買清單</button>
+      </div>
+    </div>
+
     <footer class="footer">
       <div class="wrap">
         <p>本站來自一個喜愛LiSA多年的宅宅熱心製作，非官方粉絲網站，內容僅供參考。<br>所有官方圖片、視覺素材及相關版權歸LiSA 所有。歌單資料根據日本場次整理，台北場實際演出以現場為準。本站不以任何形式營利。</p>
@@ -1469,14 +1586,62 @@
     tick();
     setInterval(tick, 1000);
 
-    // Add to calendar (Google Calendar)
-    function addToCalendar() {
-      const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
-        + '&text=' + encodeURIComponent('LiSA LiVE is Smile Always ～15～ 台北場')
-        + '&dates=20260619T110000Z/20260619T133000Z'
-        + '&details=' + encodeURIComponent('Taipei Arena 台北小巨蛋\n17:30 開放入場，19:00 開演\n實名制驗票：紙本票券 + 身分證正本\n官方應援色：粉紅色')
-        + '&location=' + encodeURIComponent('台北小巨蛋 Taipei Arena');
-      window.open(url, '_blank');
+    // Add to calendar — iOS: .ics download, Android/other: Google Calendar
+    function addToCalendar(day) {
+      var events = {
+        day1: {
+          title: 'LiSA LiVE is Smile Always ～15～ 台北場 Day 1',
+          start: '20260619T110000Z',
+          end: '20260619T133000Z',
+          dtstart: '20260619T190000',
+          dtend: '20260619T213000',
+          details: '17:30 開放入場，19:00 開演\n實名制驗票：紙本票券 + 身分證正本\n官方應援色：粉紅色'
+        },
+        day2: {
+          title: 'LiSA LiVE is Smile Always ～15～ 台北場 Day 2',
+          start: '20260620T090000Z',
+          end: '20260620T113000Z',
+          dtstart: '20260620T170000',
+          dtend: '20260620T193000',
+          details: '15:30 開放入場，17:00 開演\n實名制驗票：紙本票券 + 身分證正本\n官方應援色：粉紅色'
+        }
+      };
+      var ev = events[day];
+      if (!ev) return;
+      var location = '台北小巨蛋 Taipei Arena, 台北市松山區南京東路四段2號';
+
+      var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        var ics = [
+          'BEGIN:VCALENDAR',
+          'VERSION:2.0',
+          'PRODID:-//LiSA15th//Fan Site//EN',
+          'BEGIN:VEVENT',
+          'DTSTART;TZID=Asia/Taipei:' + ev.dtstart,
+          'DTEND;TZID=Asia/Taipei:' + ev.dtend,
+          'SUMMARY:' + ev.title,
+          'LOCATION:' + location,
+          'DESCRIPTION:' + ev.details.replace(/\n/g, '\\n'),
+          'END:VEVENT',
+          'END:VCALENDAR'
+        ].join('\r\n');
+        var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'lisa15th-taipei-' + day + '.ics';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else {
+        var url = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+          + '&text=' + encodeURIComponent(ev.title)
+          + '&dates=' + ev.start + '/' + ev.end
+          + '&details=' + encodeURIComponent(ev.details)
+          + '&location=' + encodeURIComponent(location);
+        window.open(url, '_blank');
+      }
     }
 
     // Copy setlist
@@ -1485,22 +1650,23 @@
         '★ 炎 Homura（台北確定）',
         '01. best day, best way',
         '02. Merry Hurry Berry',
-        '03. oath sign',
-        '04. crossing field',
-        '05. träumerei',
-        '06. 紅蓮華 Gurenge',
-        '07. ADAMAS',
-        '08. 赤い罠（ホーンセッションver）',
-        '09. HADASHi NO STEP',
-        '10. BRiGHT FLiGHT',
-        '11. Letters to ME',
-        '12. Patch Walk',
-        '13. DECOTORA15',
-        '14. rapid life シンドローム',
-        '15. QUEEN',
-        '16. Shouted Serenade',
-        '17. Catch the Moment',
-        '18. 逆光オーケストラ',
+        '03. Rising Hope',
+        '04. oath sign',
+        '05. crossing field',
+        '06. träumerei',
+        '07. 紅蓮華 Gurenge',
+        '08. ADAMAS',
+        '09. 赤い罠（ホーンセッションver）',
+        '10. HADASHi NO STEP',
+        '11. BRiGHT FLiGHT',
+        '12. Letters to ME',
+        '13. Patch Walk',
+        '14. DECOTORA15',
+        '15. rapid life シンドローム',
+        '16. QUEEN',
+        '17. Shouted Serenade',
+        '18. Catch the Moment',
+        '19. 逆光オーケストラ',
         '',
         '— Encore —',
         'EN1. 小豆あらい',
@@ -1541,7 +1707,9 @@
           total += parseInt(q.textContent) * price;
         });
       });
-      document.getElementById('total-price').textContent = 'NT$' + total.toLocaleString();
+      var formatted = 'NT$' + total.toLocaleString();
+      document.getElementById('total-price').textContent = formatted;
+      document.getElementById('sticky-total').textContent = formatted;
     }
 
     // Clear all goods
@@ -1589,6 +1757,21 @@
         setTimeout(function() { btn.textContent = orig; }, 1500);
       });
     }
+    // Smooth scroll to section heading (not section top)
+    document.querySelectorAll('a[href^="#setlist"], a[href^="#checklist"], a[href^="#ticket"], a[href^="#goods"]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        var targetId = this.getAttribute('href').slice(1);
+        var section = document.getElementById(targetId);
+        if (!section) return;
+        e.preventDefault();
+        var heading = section.querySelector('h2, h3');
+        var target = heading || section;
+        var topbarHeight = document.querySelector('.topbar').offsetHeight;
+        var y = target.getBoundingClientRect().top + window.pageYOffset - topbarHeight - 12;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      });
+    });
+
     // GA4: track YT song clicks
     document.querySelectorAll('.song[href]').forEach(function(el) {
       el.addEventListener('click', function() {
@@ -1596,6 +1779,24 @@
         gtag('event', 'click_song_yt', { song_name: name });
       });
     });
+
+    // Goods sticky bar — show when #goods section is in view
+    (function() {
+      var goodsSection = document.getElementById('goods');
+      var stickyBar = document.getElementById('goods-sticky');
+      if (goodsSection && stickyBar) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              stickyBar.classList.add('visible');
+            } else {
+              stickyBar.classList.remove('visible');
+            }
+          });
+        }, { threshold: 0.05 });
+        observer.observe(goodsSection);
+      }
+    })();
 
     // GA4: track checklist checks
     document.querySelectorAll('.check input').forEach(function(el) {
