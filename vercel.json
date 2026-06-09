@@ -1,8 +1,8 @@
 {
   "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
-    { "source": "/game", "destination": "/2048%E9%81%8A%E6%88%B2/game.html" },
-    { "source": "/game/", "destination": "/2048%E9%81%8A%E6%88%B2/game.html" }
+    { "source": "/game", "destination": "/game/index.html" }
   ],
   "headers": [
     {

@@ -32,7 +32,7 @@
       color: var(--ink);
       background:
         linear-gradient(rgba(253,243,236,.55), rgba(253,243,236,.55)),
-        url("素材/back.jpg") center top / cover no-repeat fixed,
+        url("assets/back.jpg") center top / cover no-repeat fixed,
         var(--paper);
       font-family: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
       line-height: 1.3;
@@ -604,7 +604,7 @@
     .flash-card.is-levelup { background: #ffc62a; color: var(--ink); }
     .flash-card.is-levelup .flash-badge {
       border: 0; background: transparent; color: var(--ink); font-size: 0;
-      background-image: url("素材/rank-icons/progress-runner-right-strawberry.png");
+      background-image: url("assets/rank-icons/progress-runner-right-strawberry.png");
       background-size: contain; background-repeat: no-repeat; background-position: center;
     }
     .flash-card.is-levelup .flash-badge.is-trophy {
@@ -680,7 +680,7 @@
       <div class="seat-cur">
         <span class="seat-label-cur">目前<br>座位</span>
         <span class="seat-cur-vis">
-          <img id="seat-img" src="素材/rank-icons/01-sewer.png" alt="">
+          <img id="seat-img" src="assets/rank-icons/01-sewer.png" alt="">
           <span class="seat-name" id="rank-name">下水道</span>
         </span>
       </div>
@@ -690,7 +690,7 @@
           <b id="next-threshold">2048</b><small>解鎖</small>
         </div>
         <div class="seat-next-vis">
-          <img id="next-seat-img" src="素材/rank-icons/02-third-floor-stand.png" alt="">
+          <img id="next-seat-img" src="assets/rank-icons/02-third-floor-stand.png" alt="">
           <span class="seat-next-name" id="rail-next-name">三樓看台</span>
         </div>
       </div>
@@ -935,9 +935,9 @@
     ];
 
     // 草莓方塊圖（數字已內建在圖內）。最高有圖到 32768。
-    var TILE_IMG_BASE = "素材/strawberry-tiles/";
-    var RANK_IMG_BASE = "素材/rank-icons/";
-    var EVENT_IMG_BASE = "素材/game-events/";
+    var TILE_IMG_BASE = "assets/strawberry-tiles/";
+    var RANK_IMG_BASE = "assets/rank-icons/";
+    var EVENT_IMG_BASE = "assets/game-events/";
     var SEAT_IMG = {
       "下水道":         RANK_IMG_BASE + "01-sewer.png",
       "三樓看台區":     RANK_IMG_BASE + "02-third-floor-stand.png",
