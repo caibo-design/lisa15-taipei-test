@@ -63,3 +63,5 @@ md檔案/
 # 2048 遊戲內的暫存大圖
 2048遊戲/產生的圖片*.png
 2048遊戲/figma-screenshot.png
+game/產生的圖片*.png
+game/figma-screenshot.png
