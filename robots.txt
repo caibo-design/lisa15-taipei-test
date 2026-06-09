@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://lisa15th-taipei.caibo-design.cc/sitemap.xml
