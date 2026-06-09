@@ -1,0 +1,65 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Vercel
+.vercel/
+
+# Env / secrets — 絕對不要進 git
+.env
+.env.*
+!.env.example
+
+# Photoshop / 大型暫存圖檔
+*.psd
+*.psb
+*.ai
+2048遊戲/產生的圖片*.png
+2048遊戲/素材/0.psd
+2048遊戲/素材/X
+
+# Obsidian
+.obsidian/
+
+# Memory / private notes
+.claude/
+memory/
+
+# OS / build artifacts
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# 個人草稿
+old/
+2048遊戲/old/
+
+# 正式網站 repo（獨立部署到 GitLab，不進測試 repo）
+網頁/
+
+# 設計檔案 / 來源檔（不需要部署到 Vercel；放雲端硬碟即可）
+設計/
+md檔案/
+應援市集/
+
+# 2048 遊戲內的暫存大圖
+2048遊戲/產生的圖片*.png
+2048遊戲/figma-screenshot.png

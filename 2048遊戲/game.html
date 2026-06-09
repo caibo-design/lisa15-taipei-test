@@ -1,0 +1,1621 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>集氣搶票 2048 | LiSA 15th 台北小巨蛋</title>
+  <meta name="description" content="合成草莓方塊，把盤面最大值一路推上 2048 搶到票，再升級座位到第一排正中間。">
+  <link rel="icon" type="image/png" href="favicon.png">
+<style>
+    :root {
+      --pink: #ff4086;
+      --pink-deep: #d51f6d;
+      --green: #7ec61a;
+      --red: #e23b3b;
+      --ink: #000000;
+      --paper: #fdf3ec;
+      --paper-2: #ffffff;
+      --muted: #6e6760;
+      --good: #2fa46a;
+      --gold: #f6c64a;
+      --line: rgba(0,0,0,.10);
+      --max: 462px;
+      --border-w: 2px;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--paper); touch-action: manipulation; }
+    body {
+      min-height: 100%;
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(253,243,236,.55), rgba(253,243,236,.55)),
+        url("素材/back.jpg") center top / cover no-repeat fixed,
+        var(--paper);
+      font-family: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+      line-height: 1.3;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, a, input, select { font: inherit; color: inherit; }
+    button { background: none; border: 0; cursor: pointer; padding: 0; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: minmax(0, var(--max)) minmax(280px, 360px);
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 16px calc(28px + env(safe-area-inset-bottom, 0px));
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .app-layout { grid-template-columns: 1fr; max-width: var(--max); }
+      .dev-side { order: 2; }
+    }
+    .wrap {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0;
+      padding: 0;
+    }
+    .dev-side {
+      position: sticky;
+      top: 16px;
+    }
+
+    .page-title {
+      text-align: center;
+      font-weight: 900;
+      font-size: clamp(28px, 7vw, 50px);
+      line-height: 1.05;
+      letter-spacing: 0;
+      padding: calc(10px + env(safe-area-inset-top, 0px)) 0 14px;
+    }
+    .page-title em { font-style: normal; color: var(--ink); }
+
+    /* 通用卡片：白底 + 2px 黑邊 + 圓角 */
+    .panel {
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+    }
+    .panel + .panel { margin-top: 10px; }
+
+    /* === 第一列：搶票值 / 排行榜按鈕 / 重來+規則 === */
+    .score-row {
+      display: grid;
+      grid-template-columns: 1fr 90px 40px;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .score-card {
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      padding: 10px 20px;
+      display: flex; align-items: center; gap: 10px;
+      min-height: 90px;
+    }
+    .score-label {
+      color: var(--ink);
+      font-weight: 900;
+      font-size: 16px;
+      flex: 0 0 auto;
+    }
+    .score-num {
+      color: var(--pink);
+      font-weight: 900;
+      font-size: clamp(34px, 9vw, 50px);
+      line-height: 1;
+      letter-spacing: .02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* === 第二列：目前座位 + 2048解鎖 === */
+    .seat-panel {
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      min-height: 119px;
+    }
+    .seat-cur {
+      display: flex; align-items: center; gap: 12px;
+      min-width: 0; flex: 1;
+    }
+    .seat-label-cur {
+      color: var(--pink);
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 1.1;
+      flex: 0 0 auto;
+    }
+    .seat-cur-vis {
+      display: flex; align-items: center; gap: 4px;
+      min-width: 0;
+    }
+    .seat-cur-vis img { width: 80px; height: auto; flex: 0 0 auto; filter: drop-shadow(0 1px 0 rgba(0,0,0,.18)); }
+    .seat-name {
+      font-weight: 900;
+      font-size: clamp(18px, 4.5vw, 24px);
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .seat-next {
+      display: flex; align-items: stretch; gap: 12px;
+      flex: 0 0 auto;
+    }
+    .seat-divider {
+      width: 2px;
+      background: var(--ink);
+      align-self: stretch;
+    }
+    .next-key {
+      color: var(--pink);
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 1.1;
+      align-self: center;
+      width: 44px;
+      text-align: center;
+    }
+    .next-key b { display: block; }
+    .next-key small { display: block; font-size: 16px; font-weight: 900; }
+    .seat-next-vis {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      flex: 0 0 auto;
+    }
+    .seat-next-vis img { width: 70px; height: auto; }
+    .seat-next-name {
+      font-weight: 900; font-size: 12px;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .icon-btn-lg {
+      background: var(--ink);
+      border-radius: var(--radius);
+      display: grid; place-items: center;
+      color: #fff;
+      transition: transform .12s ease;
+    }
+    .icon-btn-lg:active { transform: translateY(1px); }
+    .icon-btn-lg svg { width: 28px; height: 28px; }
+
+    .mini-col {
+      display: grid; grid-template-rows: 1fr 1fr;
+      gap: 6px;
+    }
+    .mini-btn {
+      width: 40px; height: 40px;
+      border-radius: var(--radius);
+      display: grid; place-items: center;
+      color: #fff;
+      transition: transform .12s ease;
+    }
+    .mini-btn:active { transform: translateY(1px); }
+    .mini-btn.pink { background: var(--pink); }
+    .mini-btn.green { background: var(--green); font-weight: 900; font-size: 22px; }
+    .mini-btn svg { width: 22px; height: 22px; }
+
+    /* === 右側突發事件直立卡 === */
+    .event-spotlight {
+      background: var(--ink);
+      border: var(--border-w) solid var(--ink);
+      border-radius: 7px;
+      padding: 16px 20px;
+      display: flex; flex-direction: column;
+      gap: 12px;
+      align-items: center; justify-content: flex-start;
+      color: #fff;
+      min-height: 255px;
+    }
+    .es-head {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .es-head .badge {
+      width: 28px; height: 28px;
+      border: 0.7px solid #fff;
+      border-radius: 999px;
+      display: grid; place-items: center;
+      color: var(--pink); font-weight: 900; font-size: 19.6px; line-height: 1;
+    }
+    .es-head .label {
+      color: var(--pink); font-weight: 900; font-size: 16px;
+    }
+    .es-body {
+      display: flex; flex-direction: column; gap: 12px;
+      width: 100%; align-items: center;
+    }
+    .es-icon {
+      background: #fff;
+      border-radius: var(--radius);
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      display: grid; place-items: center;
+      overflow: hidden;
+    }
+    .es-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .es-icon-empty {
+      font-size: 56px;
+      color: var(--muted);
+    }
+    .es-text {
+      display: flex; flex-direction: column; gap: 4px; align-items: flex-start;
+      width: 100%;
+    }
+    .es-name {
+      font-weight: 900; font-size: 16px; color: #fff;
+      word-break: break-word;
+    }
+    .es-name-empty { color: rgba(255,255,255,.6); font-weight: 700; }
+    .es-desc {
+      font-weight: 500; font-size: 12px; color: rgba(255,255,255,.85);
+    }
+
+    /* === 第三列：4×4 棋盤 === */
+    .board-panel {
+      padding: 10px;
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+    }
+    .board {
+      position: relative;
+      border-radius: var(--radius);
+      touch-action: none; user-select: none;
+      aspect-ratio: 1 / 1;
+    }
+    .board:focus, .board:focus-visible { outline: none; }
+    .cells-layer {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+      width: 100%; height: 100%;
+    }
+    .tiles-layer {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      --gap: 14px;
+      --cols: 4;
+    }
+    .cell {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.04);
+    }
+    .cell.frozen::after {
+      content: "❄ 凍結"; position: absolute; inset: 0; display: grid; place-items: center;
+      background: rgba(90,170,255,.34); color: #fff; font-size: 12px; font-weight: 900;
+      border-radius: var(--radius); pointer-events: none; z-index: 4;
+    }
+
+    .tile {
+      --row: 0; --col: 0;
+      position: absolute; left: 0; top: 0;
+      width: calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+      aspect-ratio: 1 / 1;
+      transform: translate(
+        calc(var(--col) * (100% + var(--gap))),
+        calc(var(--row) * (100% + var(--gap)))
+      );
+      transition: transform .14s cubic-bezier(.2, .8, .2, 1), opacity .14s linear;
+      will-change: transform;
+    }
+    .tile-inner {
+      width: 100%; height: 100%;
+      display: grid; place-items: center;
+      transform-origin: center;
+    }
+    .tile.spawn .tile-inner { animation: pop .22s ease-out; }
+    .tile.merged .tile-inner { animation: merge .32s ease-out; }
+    .tile.dying { opacity: 0; }
+    .berry-img {
+      width: 96%; height: 96%; object-fit: contain;
+      filter: drop-shadow(1px 2px 1px rgba(22,18,20,.18));
+      pointer-events: none; -webkit-user-drag: none;
+    }
+    .tile[data-value="2048"] .berry-img,
+    .tile[data-value="4096"] .berry-img,
+    .tile[data-value="8192"] .berry-img,
+    .tile[data-value="16384"] .berry-img,
+    .tile[data-value="32768"] .berry-img { filter: drop-shadow(0 0 9px rgba(246,198,74,.75)); }
+
+    .mask-box {
+      width: 76%; height: 76%;
+      display: grid; place-items: center;
+      background: #cdbfae; border: 2px solid var(--ink); border-radius: 12px;
+      color: #fff; -webkit-text-stroke: 2px #2a0f1c; paint-order: stroke fill;
+      font-weight: 900; font-size: clamp(22px, 7vw, 32px);
+    }
+    .tile.block { padding: 6%; }
+    .block-box {
+      width: 100%; height: 100%;
+      display: grid; place-items: center; align-content: center; gap: 2px;
+      background: var(--ink); color: #fff;
+      border: 2px solid var(--red); border-radius: 10px;
+    }
+    .block-box .bb-emoji { font-size: clamp(18px, 6vw, 28px); line-height: 1; }
+    .block-box .bb-name { color: var(--gold); font-size: 11px; font-weight: 900; }
+
+    .blind-overlay {
+      position: absolute; left: 0; right: 0; z-index: 6;
+      display: grid; place-items: center;
+      background: repeating-linear-gradient(45deg, rgba(22,18,20,.93) 0 12px, rgba(50,44,46,.93) 12px 24px);
+      border-radius: 6px; color: #fff; font-weight: 900; font-size: 13px; pointer-events: none;
+    }
+    .blind-overlay.top { top: 0; bottom: calc(50% + 2px); }
+    .blind-overlay.bottom { top: calc(50% + 2px); bottom: 0; }
+    .blind-overlay[hidden] { display: none; }
+
+    /* === 第四列：突發事件（三狀態） === */
+    .event-bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: stretch;
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: 7px;
+      padding: 16px 20px;
+      color: var(--ink);
+      min-height: 96px;
+    }
+    .eb-left {
+      display: flex; align-items: center; gap: 12px;
+      min-width: 0;
+    }
+    .eb-label {
+      color: var(--pink);
+      font-weight: 900; font-size: 16px;
+      line-height: 1.1;
+      flex: 0 0 auto;
+      padding: 4px 8px;
+    }
+    .eb-icon-wrap {
+      background: #e6e6e6;
+      border-radius: var(--radius);
+      width: 63px; height: 63px;
+      display: grid; place-items: center;
+      flex: 0 0 auto;
+      overflow: hidden;
+      color: var(--pink);
+      font-weight: 900;
+      font-size: 40px;
+      line-height: 1;
+    }
+    .eb-icon-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .eb-text {
+      display: flex; flex-direction: column; gap: 4px;
+      min-width: 0; flex: 1;
+    }
+    .eb-name {
+      font-weight: 900; font-size: 16px;
+      color: var(--ink);
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .eb-name-empty { color: var(--ink); font-weight: 900; }
+    .eb-desc {
+      font-weight: 500; font-size: 12px;
+      color: rgba(0,0,0,.7);
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .eb-right {
+      display: flex; align-items: center; gap: 20px;
+      padding-left: 16px;
+      border-left: 1px solid rgba(0,0,0,.18);
+      align-self: stretch;
+    }
+    .eb-count {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px;
+      min-width: 54px;
+    }
+    .eb-count b { color: var(--ink); }
+    .eb-count small { color: var(--ink); }
+
+    /* 好事件：粉底 */
+    .event-bar.is-good {
+      background: var(--pink);
+      color: #fff;
+    }
+    .event-bar.is-good .eb-label { color: #fff; }
+    .event-bar.is-good .eb-icon-wrap { background: #fff; }
+    .event-bar.is-good .eb-name { color: #fff; }
+    .event-bar.is-good .eb-desc { color: rgba(255,255,255,.92); }
+    .event-bar.is-good .eb-right { border-left-color: rgba(255,255,255,.5); }
+    .event-bar.is-good .eb-count b { color: #fff; }
+    .event-bar.is-good .eb-count small { color: #fff; }
+
+    /* 壞事件：黑底 */
+    .event-bar.is-bad {
+      background: var(--ink);
+      color: #fff;
+    }
+    .event-bar.is-bad .eb-label { color: var(--pink); }
+    .event-bar.is-bad .eb-icon-wrap { background: #fff; }
+    .event-bar.is-bad .eb-name { color: #fff; }
+    .event-bar.is-bad .eb-desc { color: rgba(255,255,255,.85); }
+    .event-bar.is-bad .eb-right { border-left-color: rgba(255,255,255,.5); }
+    .event-bar.is-bad .eb-count b { color: var(--pink); }
+    .event-bar.is-bad .eb-count small { color: #fff; }
+    .eb-count b {
+      color: var(--pink);
+      font-weight: 900;
+      font-size: 36px;
+      line-height: 1;
+    }
+    .eb-count small {
+      font-size: 10px;
+      color: rgba(255,255,255,.9);
+      font-weight: 700;
+    }
+
+    /* === 開發者控制台 === */
+    .dev-panel {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #fff;
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      font-size: 12px;
+    }
+    .dev-panel h2 { margin: 0 0 8px; font-size: 14px; font-weight: 900; color: var(--ink); }
+    .dev-field { display: grid; gap: 4px; margin-bottom: 8px; }
+    .dev-field label { font-weight: 800; color: var(--muted); }
+    .dev-inline { display: grid; grid-template-columns: 1fr auto; gap: 6px; }
+    .dev-inline select, .dev-inline input {
+      padding: 6px 8px; border: 1.5px solid var(--ink); border-radius: 6px; background: #fff;
+    }
+    .dev-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+    /* 通用按鈕 */
+    .btn {
+      display: inline-grid; place-items: center;
+      padding: 10px 14px;
+      background: var(--ink); color: #fff;
+      border: 2px solid var(--ink); border-radius: 6px;
+      font-weight: 900; cursor: pointer;
+      transition: transform .12s ease;
+      min-height: 38px;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn.pink { background: var(--pink); color: #fff; }
+    .btn.secondary { background: #fff; color: var(--ink); }
+
+    /* Modal */
+    .modal {
+      position: fixed; inset: 0; z-index: 50;
+      display: none; place-items: center;
+      padding: 20px;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+    }
+    .modal.open { display: grid; }
+    .modal-card {
+      width: min(420px, 100%);
+      padding: 22px;
+      background: var(--paper);
+      border: var(--border-w) solid var(--ink);
+      border-radius: var(--radius);
+      box-shadow: 8px 8px 0 var(--pink);
+      text-align: center;
+    }
+    .modal-card h2 { margin: 0 0 10px; font-size: 20px; font-weight: 900; }
+    .quiz-eyebrow { color: var(--pink); font-weight: 900; font-size: 12px; letter-spacing: .08em; margin-bottom: 6px; }
+    .quiz-q { font-size: 18px; font-weight: 900; margin-bottom: 16px; }
+    .quiz-options { display: grid; gap: 8px; text-align: left; }
+    .quiz-opt {
+      padding: 10px 12px; border: 2px solid var(--ink); border-radius: 6px;
+      background: #fff; font-weight: 800; cursor: pointer;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+    .quiz-opt:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+    .quiz-opt.right { background: #e2f7e7; border-color: var(--good); box-shadow: 3px 3px 0 var(--good); }
+    .quiz-opt.wrong { background: #ffe1e1; border-color: var(--red); box-shadow: 3px 3px 0 var(--red); }
+    .quiz-hint { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+
+    .settle-illus { font-size: 56px; line-height: 1; margin-bottom: 6px; }
+    .settle-illus img { width: 96px; margin: 0 auto; }
+    .settle-seat { font-weight: 900; font-size: 22px; margin-bottom: 4px; }
+    .settle-score { color: var(--muted); font-weight: 800; margin-bottom: 6px; }
+    .settle-score strong { color: var(--pink); font-size: 22px; margin-left: 4px; }
+    .settle-copy { color: var(--ink); margin: 6px 0 12px; font-weight: 700; }
+    .settle-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .settle-sign { margin-top: 10px; font-size: 11px; color: var(--muted); }
+
+    .board-list { display: grid; gap: 6px; margin: 6px 0 14px; text-align: left; }
+    .board-line {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 10px 12px; background: #fff; border: 2px solid var(--ink); border-radius: 6px;
+      font-weight: 900;
+    }
+    .board-line .bl-v { color: var(--pink); }
+
+    .menu-rules { text-align: left; font-size: 13px; line-height: 1.7; margin-bottom: 12px; }
+    .menu-rules b { color: var(--pink); margin-right: 4px; }
+    .menu-list { display: grid; gap: 8px; }
+
+    /* Flash 彈窗（三種狀態：good=粉, bad=黑, levelup=黃） */
+    .event-flash {
+      position: fixed; inset: 0; z-index: 60;
+      display: grid; place-items: center;
+      pointer-events: none;
+      opacity: 0;
+    }
+    .event-flash.show { animation: flashFade 2.4s ease forwards; }
+    .flash-card {
+      width: min(280px, 80vw);
+      border: 2px solid var(--ink);
+      border-radius: 7px;
+      padding: 18px 22px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      box-shadow: 6px 6px 0 rgba(0,0,0,.22);
+      transition: background-color .2s, color .2s;
+    }
+    .flash-head { display: flex; align-items: center; gap: 6px; }
+    .flash-badge {
+      width: 28px; height: 28px;
+      border-radius: 999px;
+      border: 0.7px solid currentColor;
+      display: grid; place-items: center;
+      font-weight: 900; font-size: 19.6px; line-height: 1;
+    }
+    .flash-label { font-weight: 900; font-size: 16px; line-height: 1; }
+    .flash-icon {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: #fff;
+      border-radius: 8px;
+      display: grid; place-items: center;
+      overflow: hidden;
+    }
+    .flash-icon img { width: 70%; height: 70%; object-fit: contain; }
+    .flash-icon-fallback { font-size: 64px; line-height: 1; }
+    .flash-text { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; width: 100%; }
+    .flash-name { font-weight: 900; font-size: 16px; line-height: 1.2; }
+    .flash-desc { font-weight: 500; font-size: 12px; line-height: 1.4; }
+    .flash-rare {
+      display: inline-block;
+      background: var(--gold); color: var(--ink);
+      padding: 2px 10px; border-radius: 999px;
+      font-weight: 900; font-size: 11px;
+      margin-bottom: 4px;
+    }
+    /* 好事件：粉底白字白邊圈 */
+    .flash-card.is-good { background: var(--pink); color: #fff; }
+    .flash-card.is-good .flash-badge { color: #fff; }
+    .flash-card.is-good .flash-label { color: #fff; }
+    .flash-card.is-good .flash-name { color: #fff; }
+    .flash-card.is-good .flash-desc { color: rgba(255,255,255,.92); }
+    /* 壞事件：黑底粉字粉邊圈 */
+    .flash-card.is-bad { background: var(--ink); color: #fff; }
+    .flash-card.is-bad .flash-badge { color: var(--pink); border-color: #fff; }
+    .flash-card.is-bad .flash-label { color: var(--pink); }
+    .flash-card.is-bad .flash-name { color: #fff; }
+    .flash-card.is-bad .flash-desc { color: rgba(255,255,255,.85); }
+    /* 升級：黃底黑字、獎盃 */
+    .flash-card.is-levelup { background: #ffc62a; color: var(--ink); }
+    .flash-card.is-levelup .flash-badge {
+      border: 0; background: transparent; color: var(--ink); font-size: 0;
+      background-image: url("素材/rank-icons/progress-runner-right-strawberry.png");
+      background-size: contain; background-repeat: no-repeat; background-position: center;
+    }
+    .flash-card.is-levelup .flash-badge.is-trophy {
+      background-image: none;
+      font: 0/0 a;
+    }
+    .flash-card.is-levelup .flash-badge::before {
+      content: "🏆"; font: 900 19px/1 "Inter", "Noto Sans TC", sans-serif;
+    }
+    .flash-card.is-levelup .flash-label { color: var(--ink); }
+    .flash-card.is-levelup .flash-name { color: var(--ink); }
+    .flash-card.is-levelup .flash-desc { color: rgba(0,0,0,.7); }
+    .flash-card.is-levelup .flash-icon img { width: 84%; height: 84%; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 24px;
+      transform: translate(-50%, 16px); opacity: 0;
+      background: var(--ink); color: #fff;
+      padding: 10px 18px; border-radius: 999px;
+      font-weight: 800; font-size: 13px;
+      pointer-events: none; z-index: 70;
+      transition: opacity .25s, transform .25s;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @keyframes pop { from { transform: scale(.7); opacity: .2; } to { transform: scale(1); opacity: 1; } }
+    @keyframes merge { 0% { transform: scale(.92); } 55% { transform: scale(1.26); } 100% { transform: scale(1); } }
+    @keyframes flashFade { 0% { opacity: 0; transform: translateY(-8px); } 14% { opacity: 1; transform: translateY(0); } 82% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6px); } }
+
+    @media (max-width: 380px) {
+      .seat-row { grid-template-columns: 1fr 64px 40px; gap: 6px; }
+      .icon-btn-lg svg { width: 22px; height: 22px; }
+      .seat-card { padding: 8px 12px; min-height: 80px; }
+      .seat-vis img { width: 50px; }
+      .seat-name { font-size: 20px; }
+      .progress-panel { grid-template-columns: 1fr 86px; }
+      .next-seat img { width: 64px; }
+      .eb-icon-wrap { width: 52px; height: 52px; }
+      .eb-count b { font-size: 28px; }
+      .page-title { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+  <main class="wrap">
+
+    <h1 class="page-title"><em>2048</em>:前進小巨蛋!</h1>
+
+    <!-- 第一列：搶票值 / 排行榜 / 重來+規則 -->
+    <div class="score-row">
+      <div class="score-card">
+        <span class="score-label">搶票值</span>
+        <span class="score-num" id="score">00000</span>
+      </div>
+      <button class="icon-btn-lg" id="rank-btn" type="button" aria-label="排行榜">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M5 3h14v3a5 5 0 0 1-3 4.6V13a4 4 0 0 1-3 3.9V19h3v2H8v-2h3v-2.1A4 4 0 0 1 8 13v-2.4A5 5 0 0 1 5 6V3zm-2 2h2v1a3 3 0 0 0 0 0H3V5zm16 0h2v1a3 3 0 0 1-2 2.8V5z"/>
+        </svg>
+      </button>
+      <div class="mini-col">
+        <button class="mini-btn pink" id="restart" type="button" aria-label="重新開始">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12a8 8 0 1 0 2.5-5.8M4 4v4h4"/>
+          </svg>
+        </button>
+        <button class="mini-btn green" id="menu-btn" type="button" aria-label="規則說明">？</button>
+      </div>
+    </div>
+
+    <!-- 第二列：目前座位 + 2048解鎖 預覽 -->
+    <div class="seat-panel">
+      <div class="seat-cur">
+        <span class="seat-label-cur">目前<br>座位</span>
+        <span class="seat-cur-vis">
+          <img id="seat-img" src="素材/rank-icons/01-sewer.png" alt="">
+          <span class="seat-name" id="rank-name">下水道</span>
+        </span>
+      </div>
+      <div class="seat-next">
+        <div class="seat-divider"></div>
+        <div class="next-key">
+          <b id="next-threshold">2048</b><small>解鎖</small>
+        </div>
+        <div class="seat-next-vis">
+          <img id="next-seat-img" src="素材/rank-icons/02-third-floor-stand.png" alt="">
+          <span class="seat-next-name" id="rail-next-name">三樓看台</span>
+        </div>
+      </div>
+      <div hidden>
+        <span id="seat-badge"></span>
+        <span id="to-next"></span>
+        <span id="meter-fill"></span>
+        <span id="runner"></span>
+        <span id="rail-cur"></span>
+        <span id="rail-cur-name"></span>
+        <span id="rail-next"></span>
+        <span id="progress-title"></span>
+      </div>
+    </div>
+
+    <!-- 第三列：4×4 棋盤 -->
+    <div class="panel board-panel">
+      <div class="board" id="board" aria-label="2048 草莓盤" tabindex="0"></div>
+      <div class="blind-overlay" id="blind-overlay" hidden>🧍 前面的人 200 公分</div>
+    </div>
+
+    <!-- 第四列：突發事件狀態條 -->
+    <div class="event-bar" id="event-bar">
+      <div class="eb-left">
+        <div class="eb-label">突發<br>事件</div>
+        <div class="eb-icon-wrap" id="eb-icon-wrap">
+          <img id="eb-icon-img" alt="" hidden>
+          <span id="eb-icon-emoji" style="font-size:36px">🎫</span>
+        </div>
+        <div class="eb-text">
+          <div class="eb-name" id="eb-name"><span class="eb-name-empty">目前無事件</span></div>
+          <div class="eb-desc" id="eb-desc">出現後會顯示效果說明</div>
+        </div>
+      </div>
+      <div class="eb-right">
+        <div class="eb-count">
+          <b id="eb-steps-n">—</b>
+          <small>步後消解除</small>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <aside class="dev-side">
+    <!-- 突發事件直立卡（鏡像當前事件） -->
+    <div class="event-spotlight" id="event-spotlight">
+      <div class="es-head">
+        <span class="badge">!</span>
+        <span class="label">突發事件</span>
+      </div>
+      <div class="es-body">
+        <div class="es-icon" id="es-icon">
+          <img id="es-icon-img" alt="" hidden>
+          <span class="es-icon-empty" id="es-icon-empty">🎫</span>
+        </div>
+        <div class="es-text">
+          <div class="es-name" id="es-name"><span class="es-name-empty">目前無事件</span></div>
+          <div class="es-desc" id="es-desc">事件來臨時會在這裡顯示細節</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dev-panel" aria-label="開發者控制台">
+      <h2>🛠️ 開發者控制台</h2>
+      <div class="dev-field">
+        <label>觸發事件（立即套用）</label>
+        <div class="dev-inline">
+          <select id="dev-event"></select>
+          <button class="btn" type="button" id="dev-event-go">觸發</button>
+        </div>
+      </div>
+      <div class="dev-field">
+        <label>手動設定搶票值</label>
+        <div class="dev-inline">
+          <input type="number" id="dev-score" placeholder="例如 12000">
+          <button class="btn" type="button" id="dev-score-go">套用</button>
+        </div>
+      </div>
+      <div class="dev-field">
+        <label>手動設定最大方塊（放到空格）</label>
+        <div class="dev-inline">
+          <input type="number" id="dev-tile" placeholder="例如 2048">
+          <button class="btn" type="button" id="dev-tile-go">放入</button>
+        </div>
+      </div>
+      <div class="dev-actions">
+        <button class="btn secondary" type="button" id="dev-skip">下一步必判定事件</button>
+        <button class="btn secondary" type="button" id="dev-reset">重置排行榜</button>
+      </div>
+    </div>
+  </aside>
+
+  </div><!-- /app-layout -->
+
+  <!-- 復活答題 -->
+  <div class="modal" id="quiz-modal" role="dialog" aria-modal="true" aria-labelledby="quiz-q">
+    <div class="modal-card">
+      <div class="quiz-eyebrow">真愛粉絲答題測驗 · 剩餘復活 <span id="quiz-chances">3</span></div>
+      <h2 class="quiz-q" id="quiz-q">題目</h2>
+      <div class="quiz-options" id="quiz-options"></div>
+      <p class="quiz-hint">答對才能成功復活，答錯就直接結算！</p>
+    </div>
+  </div>
+
+  <!-- 結算卡 -->
+  <div class="modal" id="settle-modal" role="dialog" aria-modal="true" aria-labelledby="settle-seat">
+    <div class="modal-card">
+      <div class="settle-illus" id="settle-illus">🚰</div>
+      <div class="settle-seat" id="settle-seat">下水道</div>
+      <div class="settle-score">集氣值 <strong id="settle-score">0</strong></div>
+      <p class="settle-copy" id="settle-copy"></p>
+      <div class="settle-actions">
+        <button class="btn" type="button" id="settle-save">保存圖片</button>
+        <button class="btn secondary" type="button" id="settle-ig">分享到 Instagram</button>
+      </div>
+      <button class="btn secondary" type="button" id="settle-restart" style="width:100%">再搶一次</button>
+      <div class="settle-sign">集氣搶票 2048 · design by @caibo_design</div>
+    </div>
+  </div>
+
+  <!-- 重來雙重確認 -->
+  <div class="modal" id="confirm-restart" role="dialog" aria-modal="true" aria-labelledby="confirm-restart-title">
+    <div class="modal-card">
+      <h2 id="confirm-restart-title">確定要重來嗎？</h2>
+      <p style="color:var(--muted);font-weight:700;margin:6px 0 14px;">目前的搶票進度會全部清空，且無法復原。</p>
+      <div class="settle-actions">
+        <button class="btn secondary" type="button" id="confirm-no">取消</button>
+        <button class="btn pink" type="button" id="confirm-yes" style="background:var(--pink)">確定重來</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 排行榜 -->
+  <div class="modal" id="rank-modal" role="dialog" aria-modal="true" aria-labelledby="rank-modal-title">
+    <div class="modal-card">
+      <h2 id="rank-modal-title">🏆 排行榜</h2>
+      <div class="board-list" id="rank-list"></div>
+      <button class="btn" type="button" data-close style="width:100%">關閉</button>
+    </div>
+  </div>
+
+  <!-- 選單 -->
+  <div class="modal" id="menu-modal" role="dialog" aria-modal="true" aria-labelledby="menu-title">
+    <div class="modal-card">
+      <h2 id="menu-title">📋 遊戲說明</h2>
+      <div class="menu-rules">
+        <div><b>1.</b> 方向鍵或滑動操作，相同草莓合成升級。</div>
+        <div><b>2.</b> 盤面最大值衝到 <b>2048＝搶到票</b>，之後繼續升座位。</div>
+        <div><b>3.</b> 座位由「最大草莓」決定：下水道→三樓→二樓→搖滾區→第一排正中間。</div>
+        <div><b>4.</b> 每 15 步有 25% 機率觸發事件，持續 5 步（特別標注除外）。</div>
+        <div><b>5.</b> 盤面卡滿後答對真愛粉絲題就能復活，最多 3 次。</div>
+      </div>
+      <div class="menu-list">
+        <button class="btn" type="button" id="menu-rank" style="width:100%">🏆 查看排行榜</button>
+        <button class="btn secondary" type="button" id="menu-restart" style="width:100%">🔄 重新開始</button>
+        <button class="btn secondary" type="button" data-close style="width:100%">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="event-flash" id="event-flash" aria-hidden="true">
+    <div class="flash-card" id="flash-card">
+      <div class="flash-head">
+        <span class="flash-badge" id="flash-badge">!</span>
+        <span class="flash-label" id="flash-label">突發事件</span>
+      </div>
+      <div class="flash-icon" id="flash-icon">
+        <img id="flash-icon-img" alt="" hidden>
+        <span class="flash-icon-fallback" id="flash-icon-emoji">🎉</span>
+      </div>
+      <div class="flash-text">
+        <div id="flash-rare-wrap"><span class="flash-rare">✨ 稀有事件</span></div>
+        <div class="flash-name" id="flash-name">事件</div>
+        <div class="flash-desc" id="flash-desc">效果說明</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" aria-live="polite"></div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    var SIZE = 4;
+    var WIN = 2048;
+    var EVENT_INTERVAL = 15;
+    var EVENT_CHANCE = 0.25;
+    var EVENT_DURATION = 5;
+    var SCORE_KEY = "lisa15-rush-best-score";
+    var SEAT_KEY = "lisa15-rush-best-seat";
+
+    // 座位階級（依「盤面最大方塊」），由高到低
+    var SEATS = [
+      { min: 16384, emoji: "🥇", name: "第一排正中間", copy: "這..這麼近的距離是可以的嗎>//<", cls: "t-front" },
+      { min: 8192,  emoji: "🎸", name: "搖滾區",       copy: "我好興奮啊！！", cls: "t-rock" },
+      { min: 4096,  emoji: "🎭", name: "二樓看台區",   copy: "往前一步！視野明顯開闊了，LiSA 的輪廓越來越清晰。", cls: "t-2f" },
+      { min: 2048,  emoji: "🏟️", name: "三樓看台區",   copy: "考慮帶個望遠鏡？", cls: "t-3f" },
+      { min: 0,     emoji: "🚰", name: "下水道",       copy: "這邊！這個水管附近可以聽到人聲！", cls: "t-down" }
+    ];
+    function seatFor(maxValue) {
+      for (var i = 0; i < SEATS.length; i++) if (maxValue >= SEATS[i].min) return SEATS[i];
+      return SEATS[SEATS.length - 1];
+    }
+
+    // 復活題庫（正解位置每次隨機）
+    var QUESTIONS = [
+      { q: "LiSA さんの座右銘は？", a: "今日のわたしより明日のわたし",
+        d: ["昨日のわたしより今日のわたし", "明日のわたしより昨日のわたし"] },
+      { q: "這場 15 週年巡演台北場的場館是？", a: "台北小巨蛋",
+        d: ["高雄巨蛋", "台北流行音樂中心"] },
+      { q: "LiSA 官方應援色是什麼顏色？", a: "粉紅色",
+        d: ["紅色", "白色"] },
+      { q: "這次巡演是 LiSA 出道幾週年？", a: "15 週年",
+        d: ["10 週年", "20 週年"] }
+    ];
+
+    // 草莓方塊圖（數字已內建在圖內）。最高有圖到 32768。
+    var TILE_IMG_BASE = "素材/strawberry-tiles/";
+    var RANK_IMG_BASE = "素材/rank-icons/";
+    var EVENT_IMG_BASE = "素材/game-events/";
+    var SEAT_IMG = {
+      "下水道":         RANK_IMG_BASE + "01-sewer.png",
+      "三樓看台區":     RANK_IMG_BASE + "02-third-floor-stand.png",
+      "二樓看台區":     RANK_IMG_BASE + "03-second-floor-stand-facing-right.png",
+      "搖滾區":         RANK_IMG_BASE + "04-rock-zone.png",
+      "第一排正中間":   RANK_IMG_BASE + "05-front-row-center.png"
+    };
+    var EVENT_IMG = {
+      "heart":      EVENT_IMG_BASE + "01-lisa-story-heart.png",
+      "longshan":   EVENT_IMG_BASE + "02-longshan-matchmaker.png",
+      "encore":     EVENT_IMG_BASE + "03-official-extra-show.png",
+      "spare":      EVENT_IMG_BASE + "04-friend-extra-ticket.png",
+      "bull":       EVENT_IMG_BASE + "05-ticket-scalper-bull.png",
+      "superbull":  EVENT_IMG_BASE + "06-super-scalper-rhino.png",
+      "cable":      EVENT_IMG_BASE + "07-unplugged-monitor-cable.png",
+      "crash":      EVENT_IMG_BASE + "08-ticket-site-crash.png",
+      "tall":       EVENT_IMG_BASE + "09-tall-person-blocking-view.png",
+      "noid":       EVENT_IMG_BASE + "10-forgot-id-card.png",
+      "chaos":      EVENT_IMG_BASE + "11-venue-flow-chaos.png",
+      "net":        EVENT_IMG_BASE + "12-fallback-event-burst.png"
+    };
+    var TILE_IMG_MAX = 32768;
+    function berryMarkup(value) {
+      if (value > TILE_IMG_MAX) {
+        // 超出素材範圍（極罕見）：用文字方塊代替
+        return '<div class="mask-box" style="background:#b5179e">' + value.toLocaleString() + '</div>';
+      }
+      return '<img class="berry-img" src="' + TILE_IMG_BASE + 'tile-' + value + '.png" alt="' + value + '" draggable="false">';
+    }
+    // 預載草莓圖，避免第一次出現時等下載
+    (function preloadTiles() {
+      for (var v = 2; v <= TILE_IMG_MAX; v *= 2) {
+        var img = new Image(); img.src = TILE_IMG_BASE + "tile-" + v + ".png";
+      }
+    })();
+
+    // ---- 狀態 ----
+    var board, score, moves, peakMax, reached2048, curSeatName;
+    var activeEvent = null, frozenRow = -1, revivalsUsed = 0;
+    var devForceCheck = false, playLocked = false, lastMerged = [];
+    // 平滑移動用：被吃方塊 id -> 目的 {r,c}，render 時動畫該方塊滑到目的格後移除
+    var pendingConsumed = {};
+    // tile id -> DOM 元素（增量渲染）
+    var tileDomMap = Object.create(null);
+    // cells layer / tiles layer 建一次就好
+    var cellsLayer = null, tilesLayer = null, cellEls = [];
+
+    // ---- DOM ----
+    var $ = function (id) { return document.getElementById(id); };
+    var boardEl = $("board");
+    var scoreEl = $("score");
+    var seatBadgeEl = $("seat-badge"), rankNameEl = $("rank-name");
+    var eventBarEl = $("event-bar"), ebNameEl = $("eb-name"), ebStepsNEl = $("eb-steps-n");
+    var blindEl = $("blind-overlay");
+    var toastEl = $("toast"), toastTimer = null;
+    var flashEl = $("event-flash"), flashTimer = null;
+
+    // ---- 工具 ----
+    function makeBoard() { return Array.from({ length: SIZE }, function () { return Array.from({ length: SIZE }, function () { return null; }); }); }
+    var nextTileId = 1;
+    function newId() { return "t" + (nextTileId++); }
+    function tile(value, type) { return { id: newId(), value: value, type: type || "normal" }; }
+    function cloneTile(t) { return t ? { id: t.id, value: t.value, type: t.type, heavy: t.heavy } : null; }
+    function randInt(n) { return Math.floor(Math.random() * n); }
+    function randItem(list) { return list[randInt(list.length)]; }
+    function shuffle(list) { var a = list.slice(); for (var i = a.length - 1; i > 0; i--) { var j = randInt(i + 1); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+    function sig(src) { return JSON.stringify(src.map(function (row) { return row.map(function (t) { return t ? [t.value, t.type] : 0; }); })); }
+    function emptyCells() { var out = []; for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) if (!board[r][c]) out.push({ r: r, c: c }); return out; }
+    function maxTile() { var m = 0; for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) { var t = board[r][c]; if (t && t.type === "normal" && t.value > m) m = t.value; } return m; }
+    function maxPos() { var m = -1, p = null; for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) { var t = board[r][c]; if (t && t.type === "normal" && t.value > m) { m = t.value; p = { r: r, c: c }; } } return p; }
+
+    function getBestScore() { return Number(localStorage.getItem(SCORE_KEY) || 0); }
+    function getBestSeatMin() { return Number(localStorage.getItem(SEAT_KEY) || 0); }
+    function saveBest() {
+      if (score > getBestScore()) localStorage.setItem(SCORE_KEY, String(score));
+      var seat = seatFor(peakMax);
+      if (seat.min > getBestSeatMin()) localStorage.setItem(SEAT_KEY, String(seat.min));
+    }
+
+    function addTile() { var cells = emptyCells(); if (!cells.length) return; var cell = randItem(cells); board[cell.r][cell.c] = tile(Math.random() < 0.9 ? 2 : 4, "normal"); }
+
+    // ---- 滑動合併（block 與凍結格視為牆） ----
+    // 回傳合併後的這一線 + 被吃掉的方塊 id（用於做位移動畫）。
+    function slideLine(line, fixedIdx) {
+      var out = new Array(SIZE).fill(null), gained = 0, mergedIdx = [], consumed = [], i = 0;
+      while (i < SIZE) {
+        var wall = (i === fixedIdx) || (line[i] && line[i].type === "block");
+        if (wall) { out[i] = line[i] || null; i++; continue; }
+        var j = i;
+        while (j < SIZE && j !== fixedIdx && !(line[j] && line[j].type === "block")) j++;
+        var seg = [];
+        for (var k = i; k < j; k++) if (line[k]) seg.push(line[k]);
+        var merged = [];
+        for (var s = 0; s < seg.length; s++) {
+          if (seg[s + 1] && seg[s].value === seg[s + 1].value && seg[s].type === "normal" && seg[s + 1].type === "normal") {
+            // 合併：留下「目標格」(seg[s+1]) 的 id；前一個 (seg[s]) 為被吃方塊。
+            var kept = seg[s + 1];
+            var nt = { id: kept.id, value: seg[s].value * 2, type: "normal", heavy: kept.heavy };
+            nt._m = true; nt._consumed = seg[s].id;
+            merged.push(nt); gained += nt.value; s++;
+          } else { merged.push(seg[s]); }
+        }
+        for (var m = 0; m < merged.length; m++) out[i + m] = merged[m];
+        i = j;
+      }
+      for (var p = 0; p < SIZE; p++) {
+        if (out[p] && out[p]._m) {
+          mergedIdx.push(p);
+          if (out[p]._consumed) consumed.push({ id: out[p]._consumed, destIdx: p });
+          delete out[p]._m; delete out[p]._consumed;
+        }
+      }
+      return { line: out, gained: gained, mergedIdx: mergedIdx, consumed: consumed };
+    }
+
+    function doMove(dir) {
+      var before = sig(board), next = makeBoard(), totalGained = 0, mergedPositions = [];
+      var consumedDest = {}; // 被吃方塊 id -> {r,c} 目的格（用於做位移動畫）
+      function lineToBoardRC(i, idx, d) {
+        if (d === "left")  return { r: i, c: idx };
+        if (d === "right") return { r: i, c: SIZE - 1 - idx };
+        if (d === "up")    return { r: idx, c: i };
+        return { r: SIZE - 1 - idx, c: i };
+      }
+      for (var i = 0; i < SIZE; i++) {
+        if ((dir === "left" || dir === "right") && i === frozenRow) { next[i] = board[i].map(cloneTile); continue; }
+        var fixedIdx = -1;
+        if (dir === "up" && frozenRow >= 0) fixedIdx = frozenRow;
+        if (dir === "down" && frozenRow >= 0) fixedIdx = SIZE - 1 - frozenRow;
+        var lineArr = [];
+        for (var j = 0; j < SIZE; j++) {
+          var c;
+          if (dir === "left") c = board[i][j];
+          else if (dir === "right") c = board[i][SIZE - 1 - j];
+          else if (dir === "up") c = board[j][i];
+          else c = board[SIZE - 1 - j][i];
+          lineArr.push(c);
+        }
+        var res = slideLine(lineArr, fixedIdx);
+        totalGained += res.gained;
+        for (var k = 0; k < SIZE; k++) {
+          var rc = lineToBoardRC(i, k, dir);
+          next[rc.r][rc.c] = res.line[k];
+        }
+        for (var mi = 0; mi < res.mergedIdx.length; mi++) {
+          var rcm = lineToBoardRC(i, res.mergedIdx[mi], dir);
+          mergedPositions.push(rcm);
+        }
+        for (var ci = 0; ci < res.consumed.length; ci++) {
+          var rcc = lineToBoardRC(i, res.consumed[ci].destIdx, dir);
+          consumedDest[res.consumed[ci].id] = rcc;
+        }
+      }
+      if (before === sig(next)) return false;
+      board = next;
+      var mult = (activeEvent && activeEvent.effect === "mult") ? activeEvent.mult : 1;
+      score += Math.round(totalGained * mult);
+      moves += 1;
+      lastMerged = mergedPositions;
+      pendingConsumed = consumedDest;
+      render();
+      return true;
+    }
+
+    // ---- 渲染 ----
+    function ensureLayers() {
+      if (cellsLayer && tilesLayer) return;
+      boardEl.innerHTML = "";
+      cellsLayer = document.createElement("div");
+      cellsLayer.className = "cells-layer";
+      tilesLayer = document.createElement("div");
+      tilesLayer.className = "tiles-layer";
+      cellEls = [];
+      for (var i = 0; i < SIZE * SIZE; i++) {
+        var c = document.createElement("div");
+        c.className = "cell";
+        cellsLayer.appendChild(c);
+        cellEls.push(c);
+      }
+      boardEl.appendChild(cellsLayer);
+      boardEl.appendChild(tilesLayer);
+    }
+
+    function buildTileBody(t, masked) {
+      var inner;
+      if (t.type === "block") inner = '<div class="block-box"><span class="bb-emoji">' + (t.heavy ? "🦏" : "🐂") + '</span><span class="bb-name">黃牛</span></div>';
+      else if (masked) inner = '<div class="mask-box">?</div>';
+      else inner = berryMarkup(t.value);
+      return '<div class="tile-inner">' + inner + '</div>';
+    }
+
+    function render() {
+      ensureLayers();
+      var masked = !!(activeEvent && activeEvent.effect === "disguise");
+
+      // 1) 更新 cells 的凍結狀態
+      for (var i = 0; i < SIZE * SIZE; i++) {
+        var r = Math.floor(i / SIZE);
+        cellEls[i].className = "cell" + (r === frozenRow ? " frozen" : "");
+      }
+
+      // 2) 收集目前盤面所有方塊（依 id）
+      var current = Object.create(null);
+      for (var r = 0; r < SIZE; r++) {
+        for (var c = 0; c < SIZE; c++) {
+          var t = board[r][c];
+          if (t) current[t.id] = { r: r, c: c, t: t };
+        }
+      }
+
+      // 3) 已不在盤上的 DOM 方塊：若被吃 → 滑去目的格再移除；否則直接移除
+      Object.keys(tileDomMap).forEach(function (id) {
+        if (current[id]) return;
+        var el = tileDomMap[id];
+        var dest = pendingConsumed[id];
+        if (dest) {
+          el.style.setProperty("--row", dest.r);
+          el.style.setProperty("--col", dest.c);
+          el.classList.add("dying");
+          setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 160);
+        } else {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }
+        delete tileDomMap[id];
+      });
+
+      // 4) 目前在盤上的：新建 / 更新位置 / 更新內容 / 合併動畫
+      Object.keys(current).forEach(function (id) {
+        var info = current[id], t = info.t;
+        var el = tileDomMap[id];
+        var isNew = false;
+        if (!el) {
+          el = document.createElement("div");
+          el.className = "tile";
+          el.style.setProperty("--row", info.r);
+          el.style.setProperty("--col", info.c);
+          tilesLayer.appendChild(el);
+          tileDomMap[id] = el;
+          isNew = true;
+        }
+
+        // 樣式 / 內容
+        var classes = "tile";
+        if (t.type === "block") classes += " block";
+        if (masked && t.type !== "block") classes += " masked";
+        el.className = classes;
+        if (t.type !== "block") el.dataset.value = String(t.value);
+        else el.removeAttribute("data-value");
+
+        // 內容只在必要時重畫
+        var contentKey = (t.type === "block") ? "B:" + (t.heavy ? "h" : "n") : (masked ? "?" : "V:" + t.value);
+        if (el.dataset.ck !== contentKey) {
+          el.innerHTML = buildTileBody(t, masked);
+          el.dataset.ck = contentKey;
+        }
+
+        // 位置（CSS transition 會處理平滑移動）
+        if (!isNew) {
+          el.style.setProperty("--row", info.r);
+          el.style.setProperty("--col", info.c);
+        }
+
+        // 動畫
+        if (isNew) {
+          el.classList.add("spawn");
+          setTimeout((function (e) { return function () { e.classList.remove("spawn"); }; })(el), 230);
+        }
+        if (lastMerged.some(function (p) { return p.r === info.r && p.c === info.c; })) {
+          el.classList.remove("merged");
+          // 等位移到位後再放大，否則合併動畫會被 transform transition 覆蓋
+          setTimeout((function (e) {
+            return function () {
+              e.classList.add("merged");
+              setTimeout(function () { e.classList.remove("merged"); }, 320);
+            };
+          })(el), 140);
+        }
+      });
+
+      // 用完即清
+      pendingConsumed = {};
+      lastMerged = [];
+
+      scoreEl.textContent = fmt5(score);
+
+      var m = maxTile();
+      if (m > peakMax) peakMax = m;
+      var seat = seatFor(peakMax);
+      if (seatBadgeEl) seatBadgeEl.textContent = seat.emoji;
+      rankNameEl.textContent = seat.name;
+      renderProgress(seat);
+
+      if (activeEvent && activeEvent.effect === "blind") { blindEl.hidden = false; blindEl.className = "blind-overlay " + activeEvent.half; }
+      else { blindEl.hidden = true; }
+    }
+
+    function fmt5(n) {
+      var s = String(Math.max(0, Math.floor(n)));
+      while (s.length < 5) s = "0" + s;
+      return s;
+    }
+    function renderProgress(seat) {
+      var idx = SEATS.indexOf(seat);
+      var fillEl = $("meter-fill");
+      var seatImg = $("seat-img");
+      if (seatImg && SEAT_IMG[seat.name]) seatImg.src = SEAT_IMG[seat.name];
+      var toNextEl = $("to-next");
+      var nextNameEl = $("rail-next-name");
+      var nextImgEl = $("next-seat-img");
+      var thrEl = $("next-threshold");
+      if (idx === 0) {
+        if (nextNameEl) nextNameEl.textContent = "封頂！";
+        if (nextImgEl) nextImgEl.src = SEAT_IMG["第一排正中間"] || nextImgEl.src;
+        if (thrEl) thrEl.textContent = "MAX";
+        if (toNextEl) toNextEl.textContent = "00000";
+        return;
+      }
+      var next = SEATS[idx - 1];
+      if (nextNameEl) nextNameEl.textContent = next.name;
+      if (nextImgEl && SEAT_IMG[next.name]) nextImgEl.src = SEAT_IMG[next.name];
+      if (thrEl) thrEl.textContent = String(next.min);
+      var diff = Math.max(0, next.min * 2 - score);
+      if (toNextEl) toNextEl.textContent = fmt5(diff);
+    }
+
+    function updateEventBar() {
+      eventBarEl.className = "event-bar";
+      var imgEl = $("eb-icon-img");
+      var emojiEl = $("eb-icon-emoji");
+      var descEl = $("eb-desc");
+      var stepsEl = $("eb-steps-n");
+      // 右側直立卡
+      var esImg = $("es-icon-img");
+      var esEmpty = $("es-icon-empty");
+      var esName = $("es-name");
+      var esDesc = $("es-desc");
+
+      if (!activeEvent) {
+        ebNameEl.innerHTML = "<span class=\"eb-name-empty\">目前無事件</span>";
+        if (descEl) descEl.textContent = "出現後會顯示效果說明";
+        if (imgEl) { imgEl.hidden = true; imgEl.removeAttribute("src"); }
+        if (emojiEl) { emojiEl.style.display = ""; emojiEl.textContent = "?"; }
+        if (stepsEl) stepsEl.textContent = "";
+        if (esImg) { esImg.hidden = true; esImg.removeAttribute("src"); }
+        if (esEmpty) { esEmpty.style.display = ""; esEmpty.textContent = "?"; }
+        if (esName) esName.innerHTML = "<span class=\"es-name-empty\">目前無事件</span>";
+        if (esDesc) esDesc.textContent = "事件來臨時會在這裡顯示細節";
+        return;
+      }
+      eventBarEl.classList.add("is-active", activeEvent.kind === "good" ? "is-good" : "is-bad");
+      ebNameEl.textContent = activeEvent.name;
+      if (descEl) descEl.textContent = activeEvent.desc || "";
+      var src = activeEvent.evKey ? EVENT_IMG[activeEvent.evKey] : null;
+      if (src && imgEl) {
+        imgEl.hidden = false; imgEl.src = src;
+        if (emojiEl) emojiEl.style.display = "none";
+      } else {
+        if (imgEl) { imgEl.hidden = true; imgEl.removeAttribute("src"); }
+        if (emojiEl) { emojiEl.style.display = ""; emojiEl.textContent = activeEvent.emoji || "🎫"; }
+      }
+      if (stepsEl) stepsEl.textContent = activeEvent.stepsLeft;
+
+      // 右側直立卡同步
+      if (esImg) {
+        if (src) { esImg.hidden = false; esImg.src = src; if (esEmpty) esEmpty.style.display = "none"; }
+        else { esImg.hidden = true; esImg.removeAttribute("src"); if (esEmpty) { esEmpty.style.display = ""; esEmpty.textContent = activeEvent.emoji || "🎫"; } }
+      }
+      if (esName) esName.textContent = activeEvent.name;
+      if (esDesc) esDesc.textContent = activeEvent.desc || "";
+    }
+
+    // ---- 閃示 / toast ----
+    // kind: "good" | "bad" | "levelup"
+    // imgSrc: 自訂圖片路徑（升級時直接傳座位圖；事件用 EVENT_IMG[evKey]）
+    function flash(emoji, name, desc, rare, evKey, kind, imgSrc) {
+      var card = $("flash-card");
+      var imgEl = $("flash-icon-img");
+      var fallbackEl = $("flash-icon-emoji");
+      var labelEl = $("flash-label");
+      card.classList.remove("is-good", "is-bad", "is-levelup");
+      var k = kind || "bad";
+      card.classList.add("is-" + k);
+      labelEl.textContent = (k === "levelup") ? "座位升級！" : "突發事件";
+      var src = imgSrc || (evKey ? EVENT_IMG[evKey] : null);
+      if (src) {
+        imgEl.hidden = false; imgEl.src = src;
+        fallbackEl.style.display = "none";
+      } else {
+        imgEl.hidden = true; imgEl.removeAttribute("src");
+        fallbackEl.style.display = "";
+        fallbackEl.textContent = emoji || (k === "levelup" ? "🏆" : "🎫");
+      }
+      $("flash-name").textContent = name;
+      $("flash-desc").textContent = desc;
+      $("flash-rare-wrap").style.display = rare ? "block" : "none";
+      flashEl.classList.remove("show"); void flashEl.offsetWidth; flashEl.classList.add("show");
+      clearTimeout(flashTimer); flashTimer = setTimeout(function () { flashEl.classList.remove("show"); }, 2400);
+    }
+    function toast(text) {
+      toastEl.textContent = text; toastEl.classList.add("show");
+      clearTimeout(toastTimer); toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 1800);
+    }
+
+    // ---- 事件實作 ----
+    function setDurationEvent(o) {
+      activeEvent = { emoji: o.emoji, evKey: o.evKey, name: o.name, kind: o.kind, rare: !!o.rare, effect: o.effect, stepsLeft: o.steps || EVENT_DURATION, mult: o.mult, half: o.half, desc: o.desc };
+      flash(o.emoji, (o.rare ? "✨ " : "") + o.name, o.desc, o.rare, o.evKey, o.kind);
+      updateEventBar();
+    }
+    function evHeart()    { setDurationEvent({ evKey: "heart",    emoji: "❤️", name: "LiSA 按你限動愛心",     kind: "good", effect: "mult", mult: 5,   desc: "接下來的移動分數 ×5" }); }
+    function evLongshan() { setDurationEvent({ evKey: "longshan", emoji: "🛕", name: "龍山寺拜月老",         kind: "good", effect: "mult", mult: 3,   desc: "接下來的移動分數 ×3" }); }
+    function evNet()      { setDurationEvent({ evKey: "net",      emoji: "🛜", name: "家中網速暴衝",         kind: "good", effect: "mult", mult: 1.5, desc: "接下來的移動分數 ×1.5" }); }
+    function evNoId()     { setDurationEvent({ evKey: "noid",     emoji: "🪪", name: "實名制沒帶證件",       kind: "bad",  effect: "mult", mult: 0,   desc: "接下來的移動分數歸零…" }); }
+
+    function evEncore() { var p = maxPos(); if (p) board[p.r][p.c].value *= 2; flash("🎁", "✨ 官方宣布加場！", "盤面最大草莓直接翻倍！", true, "encore", "good"); render(); checkSeat(); }
+    function evSpare() { var p = maxPos(); if (p) board[p.r][p.c].value = 2048; flash("🎫", "✨ 朋友說他多一張票！", "最大草莓直接變 2048！", true, "spare", "good"); render(); checkSeat(); }
+    function evChaos() { setDurationEvent({ evKey: "chaos", emoji: "🌀", name: "現場動線大混亂", kind: "bad", effect: "chaos", desc: "接下來 5 步系統會代替你隨機操作！" }); render(); }
+
+    function placeBlock(emoji, name, steps, heavy) {
+      var cells = emptyCells();
+      if (!cells.length) { toast(name + "：盤面太滿，黃牛擠不進來"); return; }
+      var cell = randItem(cells); var b = tile(0, "block"); b.heavy = !!heavy; board[cell.r][cell.c] = b;
+      setDurationEvent({ evKey: heavy ? "superbull" : "bull", emoji: emoji, name: name, kind: "bad", effect: "block", steps: steps, desc: "出現擋路黃牛方塊，" + steps + " 步後才會離開！" });
+      render();
+    }
+    function evBull()      { placeBlock("🐂", "黃牛出現", 5, false); }
+    function evSuperBull() { placeBlock("🦏", "超級黃牛出現", 10, true); }
+    function evCable() { setDurationEvent({ evKey: "cable", emoji: "🔌", name: "踢到螢幕線", kind: "bad", effect: "disguise", desc: "所有草莓變「?」，5 步後復原（合併照常）！" }); render(); }
+    function evCrash() { frozenRow = randInt(SIZE); setDurationEvent({ evKey: "crash", emoji: "💥", name: "售票網站崩潰", kind: "bad", effect: "freeze", desc: "第 " + (frozenRow + 1) + " 排凍結 5 步不能動！" }); render(); }
+    function evTall() { var half = Math.random() < 0.5 ? "top" : "bottom"; setDurationEvent({ evKey: "tall", emoji: "🧍", name: "前面的人 200 公分", kind: "bad", effect: "blind", half: half, desc: "有半個棋盤被擋住看不到，撐 5 步！" }); render(); }
+
+    var EVENT_LIST = [
+      { key: "heart", label: "好｜❤️ LiSA 按愛心 ×5", fn: evHeart },
+      { key: "longshan", label: "好｜🛕 龍山寺拜月老 ×3", fn: evLongshan },
+      { key: "net", label: "好｜🛜 家中網速暴衝 ×1.5", fn: evNet },
+      { key: "encore", label: "好｜🎁 官方加場（稀有）", fn: evEncore },
+      { key: "spare", label: "好｜🎫 朋友多一張票（稀有/2048前）", fn: evSpare },
+      { key: "bull", label: "壞｜🐂 黃牛（5 步）", fn: evBull },
+      { key: "superbull", label: "壞｜🦏 超級黃牛（10 步/2048後）", fn: evSuperBull },
+      { key: "cable", label: "壞｜🔌 踢到螢幕線（?）", fn: evCable },
+      { key: "crash", label: "壞｜💥 售票網站崩潰（凍結）", fn: evCrash },
+      { key: "tall", label: "壞｜🧍 前面 200 公分（2048後）", fn: evTall },
+      { key: "noid", label: "壞｜🪪 沒帶證件（×0）", fn: evNoId },
+      { key: "chaos", label: "壞｜🌀 動線大混亂（5 步隨機）", fn: evChaos }
+    ];
+
+    function pickGood() {
+      var r = Math.random();
+      if (r < 0.10) return evEncore();
+      if (r < 0.20 && maxTile() < WIN) return evSpare();
+      return randItem([evHeart, evLongshan, evNet])();
+    }
+    function pickBad() {
+      var pool = [evBull, evCable, evCrash, evNoId, evChaos];
+      if (maxTile() >= WIN) { pool.push(evSuperBull); pool.push(evTall); }
+      return randItem(pool)();
+    }
+
+    function tickEvents() {
+      if (!activeEvent) return;
+      activeEvent.stepsLeft -= 1;
+      if (activeEvent.stepsLeft <= 0) expireEvent();
+      updateEventBar();
+    }
+    function expireEvent() {
+      var name = activeEvent.name;
+      if (activeEvent.effect === "block") for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) if (board[r][c] && board[r][c].type === "block") board[r][c] = null;
+      if (activeEvent.effect === "freeze") frozenRow = -1;
+      activeEvent = null;
+      toast(name + " 結束了");
+      render();
+    }
+    function maybeTrigger() {
+      if (activeEvent) return;
+      var gate = devForceCheck || (moves > 0 && moves % EVENT_INTERVAL === 0);
+      devForceCheck = false;
+      if (!gate) return;
+      if (Math.random() > EVENT_CHANCE) return;
+      if (Math.random() < 0.5) pickGood(); else pickBad();
+      render();
+      checkSeat();
+    }
+
+    function checkSeat() {
+      var m = maxTile();
+      if (m > peakMax) peakMax = m;
+      var seat = seatFor(peakMax);
+      if (peakMax >= WIN && !reached2048) {
+        reached2048 = true;
+        flash("🎫", seat.name, seat.copy || "搶到票了！", false, null, "levelup", SEAT_IMG[seat.name]);
+      }
+      if (seat.name !== curSeatName) {
+        if (curSeatName && peakMax >= WIN && seat.min > 0) {
+          flash(seat.emoji, seat.name, seat.copy || "", false, null, "levelup", SEAT_IMG[seat.name]);
+        }
+        curSeatName = seat.name;
+      }
+      render();
+    }
+
+    function canMove() {
+      if (emptyCells().length) return true;
+      for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) {
+        var t = board[r][c]; if (!t || t.type !== "normal") continue;
+        var right = board[r][c + 1], down = board[r + 1] && board[r + 1][c];
+        if (right && right.type === "normal" && right.value === t.value) return true;
+        if (down && down.type === "normal" && down.value === t.value) return true;
+      }
+      return false;
+    }
+    function handleGameOver() { if (revivalsUsed < 3) openQuiz(); else openSettlement(); }
+
+    function anyModalOpen() { return document.querySelector(".modal.open") !== null; }
+
+    function input(dir) {
+      if (playLocked || anyModalOpen()) return;
+      var moved;
+      if (activeEvent && activeEvent.effect === "chaos") {
+        var dirs = shuffle(["up", "down", "left", "right"]); moved = false;
+        for (var i = 0; i < dirs.length; i++) { if (doMove(dirs[i])) { moved = true; break; } }
+      } else { moved = doMove(dir); }
+      if (!moved) return;
+      checkSeat(); tickEvents(); addTile(); render(); maybeTrigger(); saveBest();
+      if (!canMove()) { playLocked = true; setTimeout(handleGameOver, 220); }
+    }
+
+    // ---- 復活答題 ----
+    var quizModal = $("quiz-modal");
+    function openQuiz() {
+      var q = randItem(QUESTIONS);
+      var opts = shuffle([q.a].concat(q.d));
+      $("quiz-chances").textContent = String(3 - revivalsUsed);
+      $("quiz-q").textContent = q.q;
+      var box = $("quiz-options"); box.innerHTML = "";
+      opts.forEach(function (text) {
+        var btn = document.createElement("button");
+        btn.type = "button"; btn.className = "quiz-opt"; btn.textContent = text;
+        btn.addEventListener("click", function () { answerQuiz(btn, text === q.a); });
+        box.appendChild(btn);
+      });
+      quizModal.classList.add("open");
+    }
+    function answerQuiz(btn, correct) {
+      $("quiz-options").querySelectorAll(".quiz-opt").forEach(function (b) { b.disabled = true; });
+      revivalsUsed += 1;
+      if (correct) { btn.classList.add("correct"); setTimeout(function () { quizModal.classList.remove("open"); revive(); }, 700); }
+      else { btn.classList.add("wrong"); setTimeout(function () { quizModal.classList.remove("open"); openSettlement(); }, 850); }
+    }
+    function revive() {
+      var tiles = [];
+      for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) {
+        var t = board[r][c]; if (!t) continue;
+        if (t.type === "block") { board[r][c] = null; continue; }
+        tiles.push({ r: r, c: c, v: t.value });
+      }
+      tiles.sort(function (a, b) { return a.v - b.v; });
+      var remove = Math.max(4, Math.floor(tiles.length / 2));
+      for (var i = 0; i < remove && i < tiles.length; i++) board[tiles[i].r][tiles[i].c] = null;
+      if (activeEvent && activeEvent.effect === "freeze") frozenRow = -1;
+      activeEvent = null; updateEventBar(); playLocked = false; render();
+      toast("💖 復活成功！還剩 " + (3 - revivalsUsed) + " 次機會");
+      boardEl.focus({ preventScroll: true });
+    }
+
+    // ---- 結算 ----
+    var settleModal = $("settle-modal");
+    function openSettlement() {
+      var seat = seatFor(peakMax);
+      var illus = $("settle-illus"); illus.className = "settle-illus " + seat.cls; illus.textContent = seat.emoji;
+      $("settle-seat").textContent = seat.name;
+      $("settle-score").textContent = score.toLocaleString();
+      $("settle-copy").textContent = seat.copy;
+      saveBest();
+      settleModal.classList.add("open");
+    }
+    function drawCardBlob(cb) {
+      var seat = seatFor(peakMax), W = 1080, H = 1350;
+      var cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+      var x = cv.getContext("2d");
+      var g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, "#2a1138"); g.addColorStop(1, "#d5137b");
+      x.fillStyle = g; x.fillRect(0, 0, W, H);
+      x.fillStyle = "rgba(255,47,159,0.18)"; x.fillRect(0, 0, W, 12); x.fillRect(0, H - 12, W, 12);
+      x.textAlign = "center";
+      x.fillStyle = "rgba(255,255,255,0.85)"; x.font = "700 38px 'Noto Sans TC', sans-serif"; x.fillText("LiSA 15TH · 集氣搶票 2048", W / 2, 150);
+      x.font = "190px 'Apple Color Emoji','Noto Color Emoji', sans-serif"; x.fillText(seat.emoji, W / 2, 470);
+      x.fillStyle = "#fff"; x.font = "900 92px 'Noto Sans TC', sans-serif"; x.fillText(seat.name, W / 2, 620);
+      x.fillStyle = "#f6c64a"; x.font = "900 128px 'Noto Sans TC', sans-serif"; x.fillText(score.toLocaleString(), W / 2, 790);
+      x.fillStyle = "rgba(255,255,255,0.8)"; x.font = "700 40px 'Noto Sans TC', sans-serif"; x.fillText("集氣值", W / 2, 850);
+      x.fillStyle = "rgba(255,255,255,0.92)"; x.font = "700 44px 'Noto Sans TC', sans-serif"; wrapText(x, seat.copy, W / 2, 960, W - 180, 64);
+      x.fillStyle = "rgba(255,255,255,0.7)"; x.font = "700 32px 'Noto Sans TC', sans-serif"; x.fillText("lisa15th-taipei.caibo-design.cc", W / 2, H - 110);
+      x.fillStyle = "rgba(255,255,255,0.5)"; x.font = "700 28px 'Noto Sans TC', sans-serif"; x.fillText("design by @caibo_design", W / 2, H - 64);
+      cv.toBlob(function (blob) { cb(blob); }, "image/png");
+    }
+    function wrapText(ctx, text, cx, y, maxW, lh) {
+      var chars = text.split(""), line = "", lines = [];
+      for (var i = 0; i < chars.length; i++) { var test = line + chars[i]; if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = chars[i]; } else line = test; }
+      if (line) lines.push(line);
+      for (var k = 0; k < lines.length; k++) ctx.fillText(lines[k], cx, y + k * lh);
+    }
+    function saveImage() {
+      drawCardBlob(function (blob) {
+        if (!blob) { toast("圖片產生失敗，先截圖也可以"); return; }
+        var url = URL.createObjectURL(blob), a = document.createElement("a");
+        a.href = url; a.download = "lisa15-集氣搶票.png"; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+        toast("📷 圖片已保存");
+      });
+    }
+    function shareIG() {
+      var seat = seatFor(peakMax);
+      var text = "我在 LiSA 15th 集氣搶票 2048 衝到「" + seat.name + "」，集氣值 " + score.toLocaleString() + "！";
+      drawCardBlob(function (blob) {
+        var file = blob ? new File([blob], "lisa15.png", { type: "image/png" }) : null;
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], text: text }).catch(function () {}); }
+        else { saveImage(); if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {}); toast("已存圖＋複製文字，貼到 IG 限動 tag @caibo_design"); }
+      });
+    }
+
+    // ---- 排行榜 / 選單 ----
+    var rankModal = $("rank-modal"), menuModal = $("menu-modal");
+    function openRank() {
+      var bestSeat = seatFor(getBestSeatMin());
+      var list = $("rank-list");
+      list.innerHTML =
+        '<div class="board-line"><span>🏅 最佳集氣值</span><span class="bl-v">' + getBestScore().toLocaleString() + '</span></div>' +
+        '<div class="board-line"><span>🎟️ 最佳座位</span><span class="bl-v">' + bestSeat.emoji + " " + bestSeat.name + '</span></div>' +
+        '<div class="board-line"><span>🔥 本局集氣值</span><span class="bl-v">' + score.toLocaleString() + '</span></div>' +
+        '<div class="board-line"><span>📍 本局座位</span><span class="bl-v">' + seatFor(peakMax).emoji + " " + seatFor(peakMax).name + '</span></div>';
+      rankModal.classList.add("open");
+    }
+
+    // ---- 開發者控制台 ----
+    function initDev() {
+      var sel = $("dev-event");
+      EVENT_LIST.forEach(function (e) { var o = document.createElement("option"); o.value = e.key; o.textContent = e.label; sel.appendChild(o); });
+      $("dev-score-go").addEventListener("click", function () { var v = Number($("dev-score").value); if (!isNaN(v)) { score = Math.max(0, Math.round(v)); render(); saveBest(); toast("集氣值 → " + score); } });
+      $("dev-tile-go").addEventListener("click", function () {
+        var v = Number($("dev-tile").value); if (isNaN(v) || v < 2) return;
+        var cells = emptyCells(), cell = cells.length ? cells[0] : { r: 0, c: 0 };
+        board[cell.r][cell.c] = tile(v, "normal"); checkSeat(); render(); toast("已放入 " + v);
+      });
+      $("dev-event-go").addEventListener("click", function () { var key = $("dev-event").value; var ev = EVENT_LIST.filter(function (e) { return e.key === key; })[0]; if (ev) { activeEvent = null; ev.fn(); render(); } });
+      $("dev-skip").addEventListener("click", function () { devForceCheck = true; toast("下一步將判定是否觸發事件"); });
+      $("dev-reset").addEventListener("click", function () { localStorage.removeItem(SCORE_KEY); localStorage.removeItem(SEAT_KEY); toast("排行榜已重置"); });
+    }
+
+    // ---- 開始 / 重置 ----
+    function startGame() {
+      board = makeBoard();
+      score = 0; moves = 0; peakMax = 0; reached2048 = false; curSeatName = null;
+      activeEvent = null; frozenRow = -1; revivalsUsed = 0; devForceCheck = false; playLocked = false; lastMerged = [];
+      pendingConsumed = {};
+      // 清掉殘留的方塊 DOM（保留 cells / tiles layer）
+      Object.keys(tileDomMap).forEach(function (id) {
+        var el = tileDomMap[id]; if (el && el.parentNode) el.parentNode.removeChild(el);
+      });
+      tileDomMap = Object.create(null);
+      document.querySelectorAll(".modal").forEach(function (m) { m.classList.remove("open"); });
+      addTile(); addTile();
+      curSeatName = seatFor(0).name;
+      updateEventBar(); render();
+      boardEl.focus({ preventScroll: true });
+    }
+
+    // ---- 控制綁定 ----
+    document.addEventListener("keydown", function (e) {
+      var map = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", w: "up", s: "down", a: "left", d: "right", W: "up", S: "down", A: "left", D: "right" };
+      if (!map[e.key]) return;
+      e.preventDefault(); input(map[e.key]);
+    });
+    var sx = 0, sy = 0;
+    boardEl.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    boardEl.addEventListener("touchmove", function (e) { e.preventDefault(); }, { passive: false });
+    boardEl.addEventListener("touchend", function (e) {
+      var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 28) return;
+      if (Math.abs(dx) > Math.abs(dy)) input(dx > 0 ? "right" : "left"); else input(dy > 0 ? "down" : "up");
+    });
+    document.querySelectorAll("[data-move]").forEach(function (btn) { btn.addEventListener("click", function () { input(btn.dataset.move); }); });
+    document.querySelectorAll("[data-close]").forEach(function (btn) { btn.addEventListener("click", function () { btn.closest(".modal").classList.remove("open"); }); });
+
+    function confirmRestart() {
+      var confirmModal = $("confirm-restart");
+      if (confirmModal) { confirmModal.classList.add("open"); return; }
+      if (window.confirm("確定要重新開始？目前的搶票進度會清空。")) startGame();
+    }
+    $("restart").addEventListener("click", confirmRestart);
+    $("settle-restart").addEventListener("click", startGame);
+    $("settle-save").addEventListener("click", saveImage);
+    $("settle-ig").addEventListener("click", shareIG);
+    $("rank-btn").addEventListener("click", openRank);
+    $("menu-btn").addEventListener("click", function () { menuModal.classList.add("open"); });
+    $("menu-rank").addEventListener("click", function () { menuModal.classList.remove("open"); openRank(); });
+    $("menu-restart").addEventListener("click", confirmRestart);
+    var cr = $("confirm-restart");
+    if (cr) {
+      $("confirm-yes").addEventListener("click", function () { cr.classList.remove("open"); startGame(); });
+      $("confirm-no").addEventListener("click", function () { cr.classList.remove("open"); });
+    }
+
+    initDev();
+    startGame();
+  })();
+  </script>
+</body>
+</html>
