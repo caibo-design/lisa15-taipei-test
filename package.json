@@ -1,0 +1,9 @@
+{
+  "name": "lisa15-taipei-test",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LiSA 15th 台北小巨蛋 應援站 + 集氣搶票 2048（測試環境）",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4"
+  }
+}

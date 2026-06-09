@@ -803,6 +803,31 @@
       <div class="settle-seat" id="settle-seat">下水道</div>
       <div class="settle-score">集氣值 <strong id="settle-score">0</strong></div>
       <p class="settle-copy" id="settle-copy"></p>
+
+      <!-- 排行榜：登記 / 已登記後顯示名次 -->
+      <div id="rank-submit-wrap" style="margin: 10px 0 4px;">
+        <div id="rank-submit-form">
+          <p style="margin:0 0 6px;font-size:13px;font-weight:800;color:var(--muted);">
+            登錄成績到排行榜
+          </p>
+          <div style="display:flex;gap:6px;">
+            <input type="text" id="rank-nickname" maxlength="8" placeholder="暱稱 1-8 字"
+                   style="flex:1;padding:8px 10px;border:2px solid var(--ink);border-radius:6px;font-weight:800;font-size:14px;">
+            <button class="btn" type="button" id="rank-submit-btn"
+                    style="padding:8px 14px;">送出</button>
+          </div>
+          <p id="rank-submit-msg" style="margin:6px 0 0;font-size:12px;font-weight:700;color:var(--pink);min-height:16px;"></p>
+        </div>
+        <div id="rank-submit-done" style="display:none;text-align:center;padding:6px 0;">
+          <div style="font-weight:900;font-size:14px;">已登錄！</div>
+          <div style="font-size:13px;font-weight:800;color:var(--ink);margin-top:4px;">
+            你的名次：<span style="color:var(--pink);font-size:18px;" id="rank-my-rank">—</span>
+            <span style="color:var(--muted);font-size:12px;">/ <span id="rank-total">—</span> 人</span>
+          </div>
+          <button class="btn secondary" type="button" id="rank-view-btn" style="margin-top:8px;width:100%;">看完整排行榜</button>
+        </div>
+      </div>
+
       <div class="settle-actions">
         <button class="btn" type="button" id="settle-save">保存圖片</button>
         <button class="btn secondary" type="button" id="settle-ig">分享到 Instagram</button>
@@ -1486,6 +1511,14 @@
       $("settle-score").textContent = score.toLocaleString();
       $("settle-copy").textContent = seat.copy;
       saveBest();
+      // 排行榜表單：重置 / 預填上次暱稱
+      var submittedThisGame = !!submittedScoreId;
+      $("rank-submit-form").style.display = submittedThisGame ? "none" : "block";
+      $("rank-submit-done").style.display = submittedThisGame ? "block" : "none";
+      $("rank-submit-msg").textContent = "";
+      $("rank-submit-btn").disabled = false;
+      var nickInput = $("rank-nickname");
+      if (nickInput && !submittedThisGame) nickInput.value = getStoredNickname();
       settleModal.classList.add("open");
     }
     function drawCardBlob(cb) {
@@ -1533,15 +1566,52 @@
 
     // ---- 排行榜 / 選單 ----
     var rankModal = $("rank-modal"), menuModal = $("menu-modal");
-    function openRank() {
-      var bestSeat = seatFor(getBestSeatMin());
+    function escHtml(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+      });
+    }
+    async function openRank() {
       var list = $("rank-list");
-      list.innerHTML =
-        '<div class="board-line"><span>🏅 最佳集氣值</span><span class="bl-v">' + getBestScore().toLocaleString() + '</span></div>' +
-        '<div class="board-line"><span>🎟️ 最佳座位</span><span class="bl-v">' + bestSeat.emoji + " " + bestSeat.name + '</span></div>' +
-        '<div class="board-line"><span>🔥 本局集氣值</span><span class="bl-v">' + score.toLocaleString() + '</span></div>' +
-        '<div class="board-line"><span>📍 本局座位</span><span class="bl-v">' + seatFor(peakMax).emoji + " " + seatFor(peakMax).name + '</span></div>';
+      list.innerHTML = '<div class="board-line" style="justify-content:center;">載入中…</div>';
       rankModal.classList.add("open");
+      try {
+        var url = "/api/leaderboard?limit=50";
+        if (submittedScoreId) url += "&myId=" + encodeURIComponent(submittedScoreId);
+        var resp = await fetch(url);
+        var data = await resp.json();
+        if (!resp.ok || !data.ok) throw new Error(data.error || resp.status);
+        var html = "";
+        // 本機快取資料（給沒登錄時看）
+        var bestSeat = seatFor(getBestSeatMin());
+        html += '<div class="board-line"><span>🏅 我的最佳（本機）</span><span class="bl-v">' +
+          getBestScore().toLocaleString() + " · " + bestSeat.emoji + " " + escHtml(bestSeat.name) +
+          '</span></div>';
+        // 我這局的名次
+        if (data.me) {
+          html += '<div class="board-line" style="border-color:var(--pink);">' +
+            '<span>📍 我的名次 #' + data.me.rank + '</span>' +
+            '<span class="bl-v">' + escHtml(data.me.nickname) + " · " + data.me.score.toLocaleString() + '</span></div>';
+        }
+        html += '<div style="font-size:12px;color:var(--muted);font-weight:800;margin:8px 0 4px;text-align:left;">' +
+          "🏟️ 全站 Top " + data.entries.length + "（共 " + (data.total || 0) + " 人）</div>";
+        if (!data.entries.length) {
+          html += '<div class="board-line" style="justify-content:center;color:var(--muted);">還沒有人登錄，搶第一名！</div>';
+        } else {
+          data.entries.forEach(function (r) {
+            var isMe = data.me && r.id === data.me.id ? ' style="border-color:var(--pink);background:#fff0f6;"' : '';
+            html += '<div class="board-line"' + isMe + '>' +
+              '<span><b style="color:var(--ink);">#' + r.rank + '</b> ' + escHtml(r.nickname) +
+              ' <small style="color:var(--muted);font-weight:700;">' + escHtml(r.seatName) + '</small></span>' +
+              '<span class="bl-v">' + r.score.toLocaleString() + '</span>' +
+              '</div>';
+          });
+        }
+        list.innerHTML = html;
+      } catch (e) {
+        list.innerHTML = '<div class="board-line" style="justify-content:center;color:var(--red);">' +
+          "載入失敗，請稍後再試</div>";
+      }
     }
 
     // ---- 開發者控制台 ----
@@ -1565,6 +1635,8 @@
       score = 0; moves = 0; peakMax = 0; reached2048 = false; curSeatName = null;
       activeEvent = null; frozenRow = -1; revivalsUsed = 0; devForceCheck = false; playLocked = false; lastMerged = [];
       pendingConsumed = {};
+      sessionStartedAt = Date.now();
+      submittedScoreId = null;
       // 清掉殘留的方塊 DOM（保留 cells / tiles layer）
       Object.keys(tileDomMap).forEach(function (id) {
         var el = tileDomMap[id]; if (el && el.parentNode) el.parentNode.removeChild(el);
@@ -1575,6 +1647,68 @@
       curSeatName = seatFor(0).name;
       updateEventBar(); render();
       boardEl.focus({ preventScroll: true });
+    }
+
+    // ---- 排行榜串接：clientId / sessionStartedAt / API ----
+    var sessionStartedAt = Date.now();
+    var submittedScoreId = null;
+    var CLIENT_ID_KEY = "lisa15-rush-client-id";
+    function getClientId() {
+      var id = localStorage.getItem(CLIENT_ID_KEY);
+      if (id && id.length >= 16) return id;
+      var rand = (typeof crypto !== "undefined" && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : "cid-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 12);
+      localStorage.setItem(CLIENT_ID_KEY, rand);
+      return rand;
+    }
+    function getStoredNickname() {
+      return localStorage.getItem("lisa15-rush-nickname") || "";
+    }
+    function storeNickname(n) {
+      localStorage.setItem("lisa15-rush-nickname", n);
+    }
+    async function submitToLeaderboard() {
+      var input = $("rank-nickname");
+      var msg = $("rank-submit-msg");
+      var btn = $("rank-submit-btn");
+      var nickname = (input.value || "").trim();
+      if (nickname.length < 1 || nickname.length > 8) {
+        msg.textContent = "暱稱長度需 1-8 字"; return;
+      }
+      btn.disabled = true; msg.textContent = "送出中…";
+      try {
+        var resp = await fetch("/api/submit-score", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nickname: nickname,
+            score: score,
+            peakMax: peakMax,
+            seatName: seatFor(peakMax).name,
+            clientId: getClientId(),
+            sessionStartedAt: sessionStartedAt
+          })
+        });
+        var data = await resp.json();
+        if (!resp.ok || !data.ok) {
+          msg.textContent = "送出失敗：" + (data.error || resp.status);
+          btn.disabled = false;
+          return;
+        }
+        storeNickname(nickname);
+        submittedScoreId = data.id;
+        $("rank-my-rank").textContent = "#" + data.rank;
+        // 拿總人數
+        fetch("/api/leaderboard?limit=1").then(function (r) { return r.json(); }).then(function (lb) {
+          if (lb && lb.total != null) $("rank-total").textContent = lb.total;
+        }).catch(function () {});
+        $("rank-submit-form").style.display = "none";
+        $("rank-submit-done").style.display = "block";
+      } catch (e) {
+        msg.textContent = "網路錯誤，稍後再試";
+        btn.disabled = false;
+      }
     }
 
     // ---- 控制綁定 ----
@@ -1607,6 +1741,12 @@
     $("menu-btn").addEventListener("click", function () { menuModal.classList.add("open"); });
     $("menu-rank").addEventListener("click", function () { menuModal.classList.remove("open"); openRank(); });
     $("menu-restart").addEventListener("click", confirmRestart);
+    // 排行榜登錄
+    $("rank-submit-btn").addEventListener("click", submitToLeaderboard);
+    $("rank-nickname").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); submitToLeaderboard(); }
+    });
+    $("rank-view-btn").addEventListener("click", function () { settleModal.classList.remove("open"); openRank(); });
     var cr = $("confirm-restart");
     if (cr) {
       $("confirm-yes").addEventListener("click", function () { cr.classList.remove("open"); startGame(); });
